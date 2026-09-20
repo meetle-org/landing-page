@@ -1,0 +1,16 @@
+{
+  "name": "meetle-marketing-site-tools",
+  "private": true,
+  "type": "module",
+  "description": "Image pipeline and checks for the Meetle marketing site (site/ is the published folder and needs no build).",
+  "scripts": {
+    "photos": "node build-photos.mjs",
+    "favicons": "node build-favicons.mjs",
+    "mockups": "node render-mockups.mjs",
+    "check": "node check-site.mjs",
+    "screens": "node screenshot-pages.mjs"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.0"
+  }
+}

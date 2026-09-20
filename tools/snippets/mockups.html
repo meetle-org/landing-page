@@ -1,0 +1,234 @@
+<!--
+  MOCKUP LIBRARY — canonical markup for M1–M11 (content-spec §3.0, aria-labels §7.3).
+  Paste a block verbatim; the ONLY thing you change is {{PREFIX}} ("./" home, "../" sub-pages).
+  Every wrapper is <figure class="mock …" role="img" aria-label="…"> and everything inside is aria-hidden="true",
+  so the inner strings (which are real product strings — never paraphrase them) are invisible to assistive tech.
+  Sizing: a phone fills its container up to 390px (add .mock--sm for 300px, .mock--center to centre it);
+  a browser frame fills up to 1100px. Text scales with the frame (container units), so put phones in columns
+  ≥ 240px wide and browser frames in columns ≥ 600px wide. Pair a desktop screen with its phone twin using
+  .show-wide / .show-narrow (M8 + M8P, M5D + M5) so phones never get a 9px browser mockup.
+  Pulsing dots (M4, M9) and the match line (M6) animate; both are static under prefers-reduced-motion.
+  Marketing-only strings (flagged in spec §6): "Added", the "Friends" pill, the M1 helper line, the M2 hint,
+  the M7 captions, the M10 callouts. riley_m's own throwaway id on the M7 "Their screen" phone (user_5c2e7b) is
+  invented in the same format as user_a83f91.
+-->
+
+<!-- ======================= M1 — Sign in (phone) ======================= -->
+<figure class="mock mock--phone" role="img" aria-label="Meetle sign-in screen with buttons to continue with Google, Discord or GitHub.">
+<div class="device device--phone" aria-hidden="true"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-auth">
+<div class="ui-auth__brand"><img src="{{PREFIX}}assets/brand/wordmark-meetle.svg" alt="" width="351" height="120"><img src="{{PREFIX}}assets/brand/tagline-talk-first-match-later.svg" alt="" width="1057" height="120"></div>
+<p class="ui-h">Sign in to continue</p>
+<span class="ui-provider"><i class="g">G</i>Continue with Google</span>
+<span class="ui-provider"><i class="d">D</i>Continue with Discord</span>
+<span class="ui-provider"><i>GH</i>Continue with GitHub</span>
+<p class="ui-hint">18+ only. No profiles — just a username.</p>
+</div>
+</div></div></div></div>
+</figure>
+
+<!-- ======================= M2 — Choose a username (phone) ======================= -->
+<figure class="mock mock--phone" role="img" aria-label="Meetle &quot;Choose a username&quot; screen with riley_m entered and the rule &quot;3–20 characters, letters, numbers and underscores&quot;.">
+<div class="device device--phone" aria-hidden="true"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-auth">
+<div class="ui-auth__brand"><img src="{{PREFIX}}assets/brand/wordmark-meetle.svg" alt="" width="351" height="120"></div>
+<p class="ui-h">Choose a username</p>
+<p class="ui-hint">3–20 characters, letters, numbers and underscores. This is what strangers will see.</p>
+<span class="ui-field">riley_m<svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+<span class="ui-btn ui-btn--lg ui-btn--block">Save</span>
+</div>
+</div></div></div></div>
+</figure>
+
+<!-- ======================= M3 — Start (phone) ======================= -->
+<figure class="mock mock--phone" role="img" aria-label="Meetle start screen with the 18-or-older confirmation ticked and a Start Chat button.">
+<div class="device device--phone" aria-hidden="true"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-top"><img src="{{PREFIX}}assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span class="is-active">Chat</span><span>Friends</span></div><span class="ui-me">riley_m</span></div>
+<div class="ui-stack">
+<div class="ui-card">Chat one-on-one with a random stranger. Messages are never stored.</div>
+<div class="ui-check"><i><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></i><span>I confirm I am 18 years of age or older. This service is intended for adults only.</span></div>
+<span class="ui-btn ui-btn--lg ui-btn--block">Start Chat</span>
+</div>
+</div></div></div></div>
+</figure>
+
+<!-- ======================= M4 — Looking (phone) ======================= -->
+<figure class="mock mock--phone" role="img" aria-label="Meetle screen reading &quot;Looking for someone…&quot; with a Stop button.">
+<div class="device device--phone" aria-hidden="true"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-top"><img src="{{PREFIX}}assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span class="is-active">Chat</span><span>Friends</span></div><span class="ui-me">riley_m</span></div>
+<div class="ui-center"><div class="ui-dots"><i></i><i></i><i></i></div><p>Looking for someone…</p><span class="ui-btn ui-btn--outline">Stop</span></div>
+</div></div></div></div>
+</figure>
+
+<!-- ======================= M5 — Stranger chat (phone). The hero mockup. ======================= -->
+<figure class="mock mock--phone" role="img" aria-label="Meetle text chat with a stranger named QuietStorm, id user_a83f91: they ask if this is Omegle with actual humans, you say it's Omegle minus the camera plus a way to keep talking. Buttons for Add friend, Next, Stop and Report.">
+<div class="device device--phone" aria-hidden="true"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-top"><img src="{{PREFIX}}assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span class="is-active">Chat</span><span>Friends</span></div><span class="ui-me">riley_m</span></div>
+<div class="ui-partner"><span class="ui-avatar">Q</span><span class="ui-partner__meta"><span class="ui-partner__name">QuietStorm</span><span class="ui-partner__id">user_a83f91</span></span><span class="ui-pill"><svg viewBox="19 18 30 30"><path d="M28.625 32.125 33.125 22a3.375 3.375 0 0 1 3.375 3.375v4.5h6.367a2.251 2.251 0 0 1 2.25 2.587l-1.552 10.125a2.25 2.25 0 0 1-2.25 1.913h-12.69m0-12.375V44.5m0-12.375H25.25a2.25 2.25 0 0 0-2.25 2.25v7.875a2.25 2.25 0 0 0 2.25 2.25h3.375" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>Add friend</span></div>
+<p class="ui-sys">You are now chatting with QuietStorm. Say hi!</p>
+<div class="ui-msgs">
+<p class="ui-msg">ok honest question. is this basically omegle but with actual humans?</p>
+<p class="ui-msg ui-msg--me">pretty much. no camera though. and if we both tap add friend we get to keep talking</p>
+<p class="ui-msg">and if only one of us does?</p>
+<p class="ui-msg ui-msg--me">then nothing happens. and the other person never finds out</p>
+<p class="ui-msg">huh. ok that's actually kind of nice</p>
+</div>
+<div class="ui-composer"><span class="ui-input">Type a message…</span><span class="ui-btn">Send</span></div>
+<div class="ui-controls"><span class="ui-btn">Next</span><span class="ui-btn ui-btn--outline">Stop</span><span class="ui-btn ui-btn--danger">Report</span></div>
+</div></div></div></div>
+</figure>
+
+<!-- ======================= M5D — Stranger chat (desktop) ======================= -->
+<figure class="mock" role="img" aria-label="Meetle text chat with a stranger named QuietStorm, id user_a83f91: they ask if this is Omegle with actual humans, you say it's Omegle minus the camera plus a way to keep talking. Buttons for Add friend, Next, Stop and Report.">
+<div class="device device--browser" aria-hidden="true"><div class="device__body"><div class="device__bar"><i></i><i></i><i></i></div><div class="device__screen"><div class="ui">
+<div class="ui-top"><img src="{{PREFIX}}assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span class="is-active">Chat</span><span>Friends</span></div><span class="ui-me">riley_m</span></div>
+<div class="ui-body">
+<div class="ui-rail"><p class="ui-rail__h">Direct Messages</p><p class="ui-rail__empty">No friends yet — meet someone and add them from the chat.</p></div>
+<div class="ui-main">
+<div class="ui-partner"><span class="ui-avatar">Q</span><span class="ui-partner__meta"><span class="ui-partner__name">QuietStorm</span><span class="ui-partner__id">user_a83f91</span></span><span class="ui-pill"><svg viewBox="19 18 30 30"><path d="M28.625 32.125 33.125 22a3.375 3.375 0 0 1 3.375 3.375v4.5h6.367a2.251 2.251 0 0 1 2.25 2.587l-1.552 10.125a2.25 2.25 0 0 1-2.25 1.913h-12.69m0-12.375V44.5m0-12.375H25.25a2.25 2.25 0 0 0-2.25 2.25v7.875a2.25 2.25 0 0 0 2.25 2.25h3.375" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>Add friend</span></div>
+<p class="ui-sys">You are now chatting with QuietStorm. Say hi!</p>
+<div class="ui-msgs">
+<p class="ui-msg">ok honest question. is this basically omegle but with actual humans?</p>
+<p class="ui-msg ui-msg--me">pretty much. no camera though. and if we both tap add friend we get to keep talking</p>
+<p class="ui-msg">and if only one of us does?</p>
+<p class="ui-msg ui-msg--me">then nothing happens. and the other person never finds out</p>
+<p class="ui-msg">huh. ok that's actually kind of nice</p>
+</div>
+<div class="ui-composer"><span class="ui-input">Type a message…</span><span class="ui-btn">Send</span></div>
+<div class="ui-controls"><span class="ui-btn">Next</span><span class="ui-btn ui-btn--outline">Stop</span><span class="ui-btn ui-btn--danger">Report</span></div>
+</div>
+</div>
+</div></div></div></div>
+</figure>
+
+<!-- ======================= M6 — Meetle Magic (phone) ======================= -->
+<figure class="mock mock--phone" role="img" aria-label="Meetle chat showing the line &quot;You and QuietStorm matched as friends!&quot; after both people tapped Add friend.">
+<div class="device device--phone" aria-hidden="true"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-top"><img src="{{PREFIX}}assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span class="is-active">Chat</span><span>Friends</span></div><span class="ui-me">riley_m</span></div>
+<div class="ui-partner"><span class="ui-avatar">Q</span><span class="ui-partner__meta"><span class="ui-partner__name">QuietStorm</span><span class="ui-partner__id">user_a83f91</span></span><span class="ui-pill ui-pill--filled"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Friends</span></div>
+<p class="ui-match"><svg viewBox="19 18 30 30"><path d="M28.625 32.125 33.125 22a3.375 3.375 0 0 1 3.375 3.375v4.5h6.367a2.251 2.251 0 0 1 2.25 2.587l-1.552 10.125a2.25 2.25 0 0 1-2.25 1.913h-12.69m0-12.375V44.5m0-12.375H25.25a2.25 2.25 0 0 0-2.25 2.25v7.875a2.25 2.25 0 0 0 2.25 2.25h3.375" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>You and QuietStorm matched as friends!</p>
+<p class="ui-sys">You are now chatting with QuietStorm. Say hi!</p>
+<div class="ui-msgs">
+<p class="ui-msg">ok honest question. is this basically omegle but with actual humans?</p>
+<p class="ui-msg ui-msg--me">pretty much. no camera though. and if we both tap add friend we get to keep talking</p>
+<p class="ui-msg">and if only one of us does?</p>
+<p class="ui-msg ui-msg--me">then nothing happens. and the other person never finds out</p>
+<p class="ui-msg">huh. ok that's actually kind of nice</p>
+<p class="ui-msg ui-msg--me">wait. did you just</p>
+<p class="ui-msg">maybe</p>
+</div>
+<div class="ui-composer"><span class="ui-input">Type a message…</span><span class="ui-btn">Send</span></div>
+<div class="ui-controls"><span class="ui-btn">Next</span><span class="ui-btn ui-btn--outline">Stop</span><span class="ui-btn ui-btn--danger">Report</span></div>
+</div></div></div></div>
+</figure>
+
+<!-- ======================= M7 — The blind add (two phones side by side) ======================= -->
+<figure class="mock mock--pair" role="img" aria-label="Two phones side by side: on yours the button reads &quot;Added&quot;; on theirs it still reads &quot;Add friend&quot; with nothing changed, captioned &quot;They're told nothing.&quot;">
+<div class="mock-pair__col" aria-hidden="true">
+<p class="mock-pair__cap">Your screen</p>
+<div class="device device--phone device--crop"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-top"><img src="{{PREFIX}}assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span class="is-active">Chat</span><span>Friends</span></div><span class="ui-me">riley_m</span></div>
+<div class="ui-partner"><span class="ui-avatar">Q</span><span class="ui-partner__meta"><span class="ui-partner__name">QuietStorm</span><span class="ui-partner__id">user_a83f91</span></span><span class="ui-pill ui-pill--filled"><svg viewBox="19 18 30 30"><path d="M28.625 32.125 33.125 22a3.375 3.375 0 0 1 3.375 3.375v4.5h6.367a2.251 2.251 0 0 1 2.25 2.587l-1.552 10.125a2.25 2.25 0 0 1-2.25 1.913h-12.69m0-12.375V44.5m0-12.375H25.25a2.25 2.25 0 0 0-2.25 2.25v7.875a2.25 2.25 0 0 0 2.25 2.25h3.375" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>Added</span></div>
+<p class="ui-sys">You are now chatting with QuietStorm. Say hi!</p>
+<div class="ui-msgs">
+<p class="ui-msg">ok honest question. is this basically omegle but with actual humans?</p>
+<p class="ui-msg ui-msg--me">pretty much. no camera though. and if we both tap add friend we get to keep talking</p>
+</div>
+</div></div></div></div>
+</div>
+<p class="mock-pair__note" aria-hidden="true">They're told nothing.</p>
+<div class="mock-pair__col" aria-hidden="true">
+<p class="mock-pair__cap">Their screen</p>
+<div class="device device--phone device--crop"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-top"><img src="{{PREFIX}}assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span class="is-active">Chat</span><span>Friends</span></div><span class="ui-me">QuietStorm</span></div>
+<div class="ui-partner"><span class="ui-avatar">R</span><span class="ui-partner__meta"><span class="ui-partner__name">riley_m</span><span class="ui-partner__id">user_5c2e7b</span></span><span class="ui-pill"><svg viewBox="19 18 30 30"><path d="M28.625 32.125 33.125 22a3.375 3.375 0 0 1 3.375 3.375v4.5h6.367a2.251 2.251 0 0 1 2.25 2.587l-1.552 10.125a2.25 2.25 0 0 1-2.25 1.913h-12.69m0-12.375V44.5m0-12.375H25.25a2.25 2.25 0 0 0-2.25 2.25v7.875a2.25 2.25 0 0 0 2.25 2.25h3.375" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>Add friend</span></div>
+<p class="ui-sys">You are now chatting with riley_m. Say hi!</p>
+<div class="ui-msgs">
+<p class="ui-msg ui-msg--me">ok honest question. is this basically omegle but with actual humans?</p>
+<p class="ui-msg">pretty much. no camera though. and if we both tap add friend we get to keep talking</p>
+</div>
+</div></div></div></div>
+</div>
+</figure>
+
+<!-- ======================= M8 — Direct Messages (desktop) ======================= -->
+<figure class="mock" role="img" aria-label="Meetle Direct Messages on desktop: a left rail listing friends QuietStorm, NerdyNina, FluffyUnicorn17 and Alex, and an open saved conversation with QuietStorm.">
+<div class="device device--browser" aria-hidden="true"><div class="device__body"><div class="device__bar"><i></i><i></i><i></i></div><div class="device__screen"><div class="ui">
+<div class="ui-top"><img src="{{PREFIX}}assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span>Chat</span><span class="is-active">Friends</span></div><span class="ui-me">riley_m</span></div>
+<div class="ui-body">
+<div class="ui-rail"><p class="ui-rail__h">Direct Messages</p>
+<div class="ui-rail__row is-active"><span class="ui-avatar">Q</span><div><b>QuietStorm</b><span>that you type like someone who owns a lot of mugs</span></div></div>
+<div class="ui-rail__row"><span class="ui-avatar">N</span><div><b>NerdyNina</b><span>ok but have you SEEN the finale</span></div></div>
+<div class="ui-rail__row"><span class="ui-avatar">F</span><div><b>FluffyUnicorn17</b><span>send me that recipe??</span></div></div>
+<div class="ui-rail__row"><span class="ui-avatar">A</span><div><b>Alex</b><span>night!</span></div></div>
+</div>
+<div class="ui-main">
+<div class="ui-thread__head"><span class="ui-avatar">Q</span><b>QuietStorm</b><span class="ui-pill ui-pill--green"><svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-6.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>Friends</span><span class="ui-link">Remove friend</span></div>
+<div class="ui-msgs">
+<p class="ui-sys">You and QuietStorm matched as friends!</p>
+<p class="ui-msg">ok it worked. we're friends now apparently</p>
+<p class="ui-msg ui-msg--me">wild. so what were you going to say before i almost hit next</p>
+<p class="ui-msg">that you type like someone who owns a lot of mugs</p>
+<p class="ui-msg ui-msg--me">…how</p>
+</div>
+<div class="ui-composer"><span class="ui-input">Type a message…</span><span class="ui-btn">Send</span></div>
+</div>
+</div>
+</div></div></div></div>
+</figure>
+
+<!-- ======================= M8P — Direct Messages (phone) ======================= -->
+<figure class="mock mock--phone" role="img" aria-label="Meetle Direct Messages list on a phone with four matched friends: QuietStorm, NerdyNina, FluffyUnicorn17 and Alex.">
+<div class="device device--phone device--crop" aria-hidden="true"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-top"><img src="{{PREFIX}}assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span>Chat</span><span class="is-active">Friends</span></div><span class="ui-me">riley_m</span></div>
+<div class="ui-rail ui-rail--full"><p class="ui-rail__h">Direct Messages</p>
+<div class="ui-rail__row is-active"><span class="ui-avatar">Q</span><div><b>QuietStorm</b><span>that you type like someone who owns a lot of mugs</span></div></div>
+<div class="ui-rail__row"><span class="ui-avatar">N</span><div><b>NerdyNina</b><span>ok but have you SEEN the finale</span></div></div>
+<div class="ui-rail__row"><span class="ui-avatar">F</span><div><b>FluffyUnicorn17</b><span>send me that recipe??</span></div></div>
+<div class="ui-rail__row"><span class="ui-avatar">A</span><div><b>Alex</b><span>night!</span></div></div>
+</div>
+</div></div></div></div>
+</figure>
+
+<!-- ======================= M9 — Report (phone, two frames) ======================= -->
+<figure class="mock mock--pair mock--pair-plain" role="img" aria-label="Meetle's report confirmation, &quot;Report QuietStorm and end the chat?&quot;, followed by the &quot;Looking for someone…&quot; screen.">
+<div class="mock-pair__col" aria-hidden="true">
+<div class="device device--phone"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-top"><img src="{{PREFIX}}assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span class="is-active">Chat</span><span>Friends</span></div><span class="ui-me">riley_m</span></div>
+<div class="ui-partner"><span class="ui-avatar">Q</span><span class="ui-partner__meta"><span class="ui-partner__name">QuietStorm</span><span class="ui-partner__id">user_a83f91</span></span><span class="ui-pill"><svg viewBox="19 18 30 30"><path d="M28.625 32.125 33.125 22a3.375 3.375 0 0 1 3.375 3.375v4.5h6.367a2.251 2.251 0 0 1 2.25 2.587l-1.552 10.125a2.25 2.25 0 0 1-2.25 1.913h-12.69m0-12.375V44.5m0-12.375H25.25a2.25 2.25 0 0 0-2.25 2.25v7.875a2.25 2.25 0 0 0 2.25 2.25h3.375" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>Add friend</span></div>
+<p class="ui-sys">You are now chatting with QuietStorm. Say hi!</p>
+<div class="ui-msgs">
+<p class="ui-msg">ok honest question. is this basically omegle but with actual humans?</p>
+<p class="ui-msg ui-msg--me">pretty much. no camera though. and if we both tap add friend we get to keep talking</p>
+<p class="ui-msg">and if only one of us does?</p>
+</div>
+<div class="ui-composer"><span class="ui-input">Type a message…</span><span class="ui-btn">Send</span></div>
+<div class="ui-controls"><span class="ui-btn">Next</span><span class="ui-btn ui-btn--outline">Stop</span><span class="ui-btn ui-btn--danger">Report</span></div>
+</div>
+<div class="ui-dim"><div class="ui-sheet"><p>Report QuietStorm and end the chat?</p><div class="ui-sheet__btns"><span class="ui-btn ui-btn--red">Report</span><span class="ui-btn ui-btn--outline">Cancel</span></div></div></div>
+</div></div></div>
+</div>
+<div class="mock-pair__col" aria-hidden="true">
+<div class="device device--phone"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-top"><img src="{{PREFIX}}assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span class="is-active">Chat</span><span>Friends</span></div><span class="ui-me">riley_m</span></div>
+<div class="ui-center"><div class="ui-dots"><i></i><i></i><i></i></div><p>Looking for someone…</p><span class="ui-btn ui-btn--outline">Stop</span></div>
+</div></div></div></div>
+</div>
+</figure>
+
+<!-- ======================= M10 — What strangers see (zoomed partner row) ======================= -->
+<figure class="mock mock--zoom" role="img" aria-label="What a stranger sees on Meetle: the username QuietStorm, the throwaway id user_a83f91 and an Add friend button, with email, real name, photo, account id and location crossed out.">
+<div aria-hidden="true">
+<div class="mock-zoom__row"><span class="ui-avatar">Q</span><span class="ui-partner__meta"><span class="ui-partner__name">QuietStorm</span><span class="ui-partner__id">user_a83f91</span></span><span class="ui-pill"><svg viewBox="19 18 30 30"><path d="M28.625 32.125 33.125 22a3.375 3.375 0 0 1 3.375 3.375v4.5h6.367a2.251 2.251 0 0 1 2.25 2.587l-1.552 10.125a2.25 2.25 0 0 1-2.25 1.913h-12.69m0-12.375V44.5m0-12.375H25.25a2.25 2.25 0 0 0-2.25 2.25v7.875a2.25 2.25 0 0 0 2.25 2.25h3.375" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>Add friend</span></div>
+<ul class="mock-zoom__callouts"><li>the username they chose</li><li>a throwaway id, new every connection</li><li>the only button that matters</li></ul>
+<p class="mock-zoom__strike"><s>email</s> · <s>real name</s> · <s>photo</s> · <s>account id</s> · <s>location</s></p>
+</div>
+</figure>
+
+<!-- ======================= M11 — Disconnected (phone, 404 page only) ======================= -->
+<figure class="mock mock--phone mock--sm mock--center" role="img" aria-label="Meetle chat reading &quot;QuietStorm disconnected. Click Next to find someone else.&quot; with a Next button.">
+<div class="device device--phone device--crop" aria-hidden="true"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-top"><img src="{{PREFIX}}assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span class="is-active">Chat</span><span>Friends</span></div><span class="ui-me">riley_m</span></div>
+<div class="ui-center"><p class="ui-sys">QuietStorm disconnected. Click Next to find someone else.</p><span class="ui-btn ui-btn--lg">Next</span></div>
+</div></div></div></div>
+</figure>

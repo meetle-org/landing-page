@@ -1,0 +1,11 @@
+/* Shared layout for the 1200×630 Open Graph cards (tools/mockups/og-*.html). Screenshot-only; not shipped. */
+html,body{margin:0;width:1200px;height:630px;overflow:hidden}
+body.og{background:#F5EFEC;position:relative;font-family:var(--font-body)}
+.og__copy{position:absolute;left:72px;top:76px;width:660px}
+.og__wordmark{width:196px;height:auto;margin:0 0 30px}
+.og__tagline{width:640px;height:auto;margin:0 0 36px}
+.og__sub{font-family:var(--font-body);font-size:29px;font-weight:500;color:#515151;margin:0;letter-spacing:-.005em}
+.og__phone{position:absolute;right:-26px;top:78px;width:390px}
+.og__mark{position:absolute;left:74px;bottom:58px;width:44px;height:44px}
+.og .ui-dots i{animation:none;opacity:1;transform:none}
+.og .ui-match{animation:none}

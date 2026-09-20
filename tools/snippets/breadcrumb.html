@@ -1,0 +1,33 @@
+<!--
+  BREADCRUMB — first thing inside <main id="main"> on every sub-page (never on the home page or 404.html).
+  Replace "How it works" with the page name from spec §6: How it works · Safety · FAQ · Omegle alternative · Privacy · Terms.
+  Pair it with the BreadcrumbList JSON-LD below (goes in <head>, inside the page's single ld+json script;
+  on /faq/ and /omegle-alternative/ put BreadcrumbList and FAQPage together in one "@graph" array).
+-->
+<div class="container">
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <ol>
+      <li><a href="../">Home</a></li>
+      <li><a href="./" aria-current="page">How it works</a></li>
+    </ol>
+  </nav>
+</div>
+
+<!-- JSON-LD example for the same page (spec §8.1) -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
+ {"@type":"ListItem","position":1,"name":"Home","item":"https://meetle.org/"},
+ {"@type":"ListItem","position":2,"name":"How it works"}]}
+</script>
+
+<!-- When the page also carries FAQPage (faq, omegle-alternative), combine them: -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+ {"@type":"BreadcrumbList","itemListElement":[
+  {"@type":"ListItem","position":1,"name":"Home","item":"https://meetle.org/"},
+  {"@type":"ListItem","position":2,"name":"FAQ"}]},
+ {"@type":"FAQPage","mainEntity":[
+  {"@type":"Question","name":"What is Meetle?","acceptedAnswer":{"@type":"Answer","text":"…plain text, [REVIEW] tags stripped…"}}
+ ]}
+]}
+</script>
