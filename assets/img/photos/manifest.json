@@ -1,0 +1,302 @@
+{
+ "bikes-park": {
+  "width": 2028,
+  "height": 2030,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 480
+   },
+   "960": {
+    "w": 960,
+    "h": 961
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1441
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAAAwBQCdASoYABgAPu1qsVAppiUiqAqpMB2JYwC2yBELTUS9tD3pL51C1JdxDct6TsWggAD+6+tm9i9MuE8ZQMx5kcn6LfUVIADnc5yuE54FR4rQ2BVmHfJpnWgVE023irXmTlg333Y9/3VCFk9KBiEMTq0lnoAA"
+ },
+ "car-window": {
+  "width": 1986,
+  "height": 1793,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 433
+   },
+   "960": {
+    "w": 960,
+    "h": 867
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1300
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAQBQCdASoYABYAPu1wslKppiSiqAgBMB2JZQC7ABI7bwy1KpLtYUEQ5JvWdSh1E+YAAP7AYj19xNN/BexIUM5/CADzW3BPIisabj6gIvMgGo71bAdOZIgbY8AjGQDu3/XfhG17s8Cidn/S1QAAAA=="
+ },
+ "guys-talking-wall": {
+  "width": 2036,
+  "height": 2028,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 478
+   },
+   "960": {
+    "w": 960,
+    "h": 956
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1434
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAAAwBQCdASoYABgAPu1uq1GppqOiqAqpMB2JYwCCvgPyPbb6T3jZLrGNPnlbHEZnRJSwYADiBdDyuLtH/Lai7Xt2hX+9s7hfs/COD96JOwfZZhLYMIz55bWtviTsLxkJuGpFbrCspuxGIHiZTZx2MfGxndrOI5EwtHNwAA=="
+ },
+ "huddle-laugh": {
+  "width": 2034,
+  "height": 2038,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 481
+   },
+   "960": {
+    "w": 960,
+    "h": 962
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1443
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAABQBQCdASoYABgAPu1ep06ppKMiMBgMATAdiWUAt7gM/IQnkKeZpxlnW5R/ouPCxeQ7oQAAzbVDFCYDQYo+/U1Hwt/NmAX9BMwLnQra8j9roS1F+q3dYt00DFBATbLgA6ZC6ydDgujR7XqDRoql2YAA"
+ },
+ "lake-couple": {
+  "width": 2002,
+  "height": 1980,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 475
+   },
+   "960": {
+    "w": 960,
+    "h": 949
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1424
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAAAQBQCdASoYABgAPulkpE2pJiMiMAwBIB0JQBadBEAJqaKYM9JnCuwKGSwPreF+s+AAAP6yM1hzEHLrkpRYImRXPk5NuAMyVp1VkuK7M4Y17Nj3VDPGkS8Ase5k1vkdJsFb2gK8MdG0xuRrs5SGcHUafjHwQkAA"
+ },
+ "lockers-friends": {
+  "width": 2034,
+  "height": 2030,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 479
+   },
+   "960": {
+    "w": 960,
+    "h": 958
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1437
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAAAQBQCdASoYABgAPu1oqk+ppiOiKA1RMB2JQBadAiMMBWX2A1trRGwxfjilxpXcdIUgAP5AgVdwOvFDtPJWo1ahoZDzERxjnGelaBEoWEckpirWZftP91rZoV+ppTreSECZJuzYsUGkEXzJQeSD+SQAAAA="
+ },
+ "night-laugh-two": {
+  "width": 1442,
+  "height": 1200,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 399
+   },
+   "960": {
+    "w": 960,
+    "h": 799
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1198
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAACQBQCdASoYABQAPuVepE2pJSOiMAwBIByJQBdkFThhL+p6lFcZaUl7j8vqMiReTW3HMVMhQADgDoLGlzmnwzPzQilWYkSW+XWkzC/X7zqSGfWhwnmtuml7HB+TpPp4n6TFC6C2lMCPqweBKPqrIQRTINEIY1AAAAA="
+ },
+ "picnic-headphones": {
+  "width": 2038,
+  "height": 2032,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 479
+   },
+   "960": {
+    "w": 960,
+    "h": 957
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1436
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRn4AAABXRUJQVlA4IHIAAADQBACdASoYABgAPu1uqlCppqOiqAqpMB2JYwC7MtpBohYtn6rdC9jcuiHVmTPO4AD+xfkOKg2NvafMTBJPQm2+5DJXPa9HTNmfENyNl7BgPKdbH2IfISQ+o1A7NaFEpxvtz1inw4Xcpz7B3B/UP3+0AAA="
+ },
+ "portrait-guy-selfie": {
+  "width": 2042,
+  "height": 1784,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 419
+   },
+   "960": {
+    "w": 960,
+    "h": 839
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1258
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAADwBACdASoYABUAPuVepk2pJSOiN/VYASAciUATpeggHSjSuKLI2niEuHJX0cQnrAAA/sAyxWyNJtBLQCPiESShEivhcC/09VzQzf3jXyv9ICkyCpN/j7fiXlz59uiNSuMkYO05/zUvh0nDoAA="
+ },
+ "portrait-woman-calm": {
+  "width": 1676,
+  "height": 1530,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 438
+   },
+   "960": {
+    "w": 960,
+    "h": 876
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1315
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAAAwBQCdASoYABYAPu1qrlEppaQiqAqpMB2JYgCdAA21kQo/MP9cqnOYWJ0Q3o9qA7o3wAD3JI+lfw0Q3eE/UyUHxIozHchEah+oQQapaM3HixqyTD6T9qF5Bzng9wP5/LHB2jDKVKiHXM+YuQ3V4YkJxZLjq2HMlSv6kQAA"
+ },
+ "portrait-woman-laugh": {
+  "width": 2016,
+  "height": 1790,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 426
+   },
+   "960": {
+    "w": 960,
+    "h": 852
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1279
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAADQBACdASoYABUAPu1iqE2ppaOiMBgMATAdiWQAnTLQwTU9SCDTMZ/zz3Cw59f4MgD+8N3IY2qSXE0X/qWLwuM9GZWyk4KHrowZOrtZcqmqP5uNsMuJbUS620BIa+t96uG/Z/NT5JETHPAA"
+ },
+ "portrait-woman-lean": {
+  "width": 3001,
+  "height": 4059,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 649
+   },
+   "960": {
+    "w": 960,
+    "h": 1299
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1948
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAABwBQCdASoYACAAPu1orU8ppiQiKA1RMB2JYwCdAA9W8MzobUgpRjaPBycslsxVEUQaSvoAAP0hiP6yE4aKXoI4z6givaPGfkQKWhRiQtJ+OC29St91Pw0O5XAmHSzy43cEb5SSBa+ZnysgTzVQxIoeOD96igxtdozY9PlSZOlQAA=="
+ },
+ "portrait-woman-side": {
+  "width": 1292,
+  "height": 1752,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 651
+   },
+   "960": {
+    "w": 960,
+    "h": 1302
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRrIAAABXRUJQVlA4IKYAAABQBgCdASoYACEAPtlcpE2oJaOiNVv8AQAbCWMAnQAa9WRy4iIRuaqYjD2puY13aN+p6O+N9qNx9kj88AD+I1NMF1Jo0gvsRWo236lWTf3iwu1EH4K0iC+dxU3965hUo5CGpIn6ihp3/Saa39QFjL/hzfdP/wtluHjQoJbRmiSawVw/NQw7CrmdQlFy/CGoWZGEesTR9nphNfcwb/CD5tpVqJuGOpwA"
+ },
+ "quiet-two": {
+  "width": 2030,
+  "height": 2032,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 480
+   },
+   "960": {
+    "w": 960,
+    "h": 961
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1441
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRpAAAABXRUJQVlA4IIQAAABQBQCdASoYABgAPu1urU2pp6SiMAgBMB2JQBXDjP/7l/Ws27qRANojYSc6pDlbnL4z5wAA/uhtN+Y+VEinHlvkte+2iCTcfpp/dbNevVrn9I0xrblnAvMG33G5twr0syncqy1Q1IBAiEVSeRDuVrLBJac628HiYkCdOQIzvXnFMBjTAAA="
+ },
+ "skate-crew": {
+  "width": 2034,
+  "height": 2034,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 480
+   },
+   "960": {
+    "w": 960,
+    "h": 960
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1440
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAABwBQCdASoYABgAPt1cpU2opSOiN/qoARAbiWMAs4Ah2eAWK0dZ4kJ744E8L+o1d1VG7AyAAP6UwXizpsvOL/hUNwo0IkPOV3MZAhacciHf2vV8t7HYZKwIKNUkXoB7wjylNVP/AZEpC5NN0AA="
+ },
+ "street-selfie-two": {
+  "width": 2034,
+  "height": 2030,
+  "sizes": {
+   "480": {
+    "w": 480,
+    "h": 479
+   },
+   "960": {
+    "w": 960,
+    "h": 958
+   },
+   "1440": {
+    "w": 1440,
+    "h": 1437
+   }
+  },
+  "lqip": "data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAACwBACdASoYABgAPuVeqE2pJSQiMAwBIByJQBhQAXwj5tZeUuNMyC6QJwezms6QAPVBwSuj9WVNzyd2tWtMZTNepwVRrSUsdyJHH+kmYx6X2VkLXT7q5KEuG0yH10z+J03jk4rjk9B+qEiatmdAAA=="
+ }
+}
