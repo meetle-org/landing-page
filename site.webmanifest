@@ -1,7 +1,7 @@
 {
   "name": "Meetle",
   "short_name": "Meetle",
-  "description": "Talk to a stranger. Keep your face to yourself. One conversation, text first, no profile. 18+.",
+  "description": "Talk first, match later. One conversation with one stranger, text first: no profile, no photo, no real name. 18+.",
   "start_url": "./",
   "display": "browser",
   "background_color": "#F5EFEC",
