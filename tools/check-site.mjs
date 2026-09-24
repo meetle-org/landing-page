@@ -1,6 +1,9 @@
-// Static checks for every HTML page in site/: SEO tags, structure, links, images. Exit 1 on errors.
+// Static checks for every HTML page in site/: SEO tags, structure, links (incl. #fragment targets), images, truth rules.
+// Exit 1 on errors. `--external` also requests every outbound link (needs network; failures are warnings).
 import fs from 'node:fs'; import path from 'node:path';
 const SITE = path.join(import.meta.dirname, '..', 'site');
+const EXTERNAL = process.argv.includes('--external'); const outbound = new Map(); // url -> first page that links it
+const idsCache = new Map(); const idsOf = f => { if (!idsCache.has(f)) idsCache.set(f, new Set([...fs.readFileSync(f, 'utf8').matchAll(/\sid="([^"]+)"/g)].map(m => m[1]))); return idsCache.get(f); };
 const CANON = 'https://meetle.org/';
 const pages = []; const walk = d => { for (const e of fs.readdirSync(d, { withFileTypes: true })) { const p = path.join(d, e.name); if (e.isDirectory()) walk(p); else if (e.name.endsWith('.html')) pages.push(p); } }; walk(SITE);
 let errors = 0, warns = 0; const err = (p, m) => { errors++; console.log(`ERROR ${path.relative(SITE, p)}: ${m}`); }; const warn = (p, m) => { warns++; console.log(`warn  ${path.relative(SITE, p)}: ${m}`); };
@@ -30,20 +33,93 @@ for (const p of pages) {
     const tag = m[0]; const v = attr(tag, 'href') ?? attr(tag, 'src') ?? attr(tag, 'srcset');
     if (!v) continue;
     for (const raw of v.split(',').map(s => s.trim().split(/\s+/)[0]).filter(Boolean)) {
-      if (/^(https?:|mailto:|tel:|data:|#|javascript:)/i.test(raw)) { if (/^https?:\/\/meetle\.org\//.test(raw) && /^<a/i.test(tag) && !is404) warn(p, `internal link uses absolute URL (breaks the github.io preview): ${raw}`); continue; }
+      const frag = raw.includes('#') ? raw.slice(raw.indexOf('#') + 1) : '';
+      if (/^https?:\/\/meetle\.org\//.test(raw)) { // absolute internal (404.html): the target and its #fragment must exist in site/
+        if (/^<a/i.test(tag) && !is404) warn(p, `internal link uses absolute URL (breaks the github.io preview): ${raw}`);
+        const rel = raw.slice('https://meetle.org/'.length).split(/[?#]/)[0]; const f = path.join(SITE, rel, rel === '' || rel.endsWith('/') ? 'index.html' : '');
+        if (/^<a/i.test(tag)) { if (!fs.existsSync(f)) err(p, `link to a page that doesn't exist in site/: ${raw}`); else if (frag && !idsOf(f).has(frag)) err(p, `#${frag} doesn't exist on ${rel || 'the home page'}: ${raw}`); }
+        continue;
+      }
+      if (/^https?:/i.test(raw)) { if (/^<a/i.test(tag) && !outbound.has(raw)) outbound.set(raw, p); continue; }
+      if (raw.startsWith('#')) { if (frag && !idsOf(p).has(frag)) err(p, `in-page link to a missing id: ${raw}`); continue; }
+      if (/^(mailto:|tel:|data:|javascript:)/i.test(raw)) continue;
       if (raw.startsWith('/')) { err(p, `root-absolute URL (breaks under /landing-page/): ${raw}`); continue; }
       if (is404) { err(p, `404.html must use absolute https://meetle.org/ links, found relative: ${raw}`); continue; }
       const target = path.join(dir, raw.split('#')[0].split('?')[0]); const t2 = target.endsWith('/') ? path.join(target, 'index.html') : target;
       if (!fs.existsSync(t2) && !fs.existsSync(target)) err(p, `broken relative link: ${raw}`);
+      else if (frag && fs.existsSync(t2) && t2.endsWith('.html') && !idsOf(t2).has(frag)) err(p, `#${frag} doesn't exist on the target page: ${raw}`);
     }
   }
   for (const m of html.matchAll(/<img\b[^>]*>/gi)) { const t = m[0]; if (attr(t, 'alt') === null) err(p, `img without alt: ${t.slice(0, 80)}`); if (!attr(t, 'width') || !attr(t, 'height')) warn(p, `img without width/height: ${(attr(t, 'src') || '').slice(0, 60)}`); }
   if (/<a[^>]*href="#"[^>]*>/.test(html)) warn(p, 'anchor with href="#"');
   if (!/<a[^>]*class="[^"]*skip[^"]*"/i.test(html)) warn(p, 'no skip link');
-  if (/\b(friend request|video chat|voice chat|video call)\b/i.test(html.replace(/<script[\s\S]*?<\/script>/g, ''))) { const hits = [...html.replace(/<script[\s\S]*?<\/script>/g, '').matchAll(/[^.]{0,60}\b(friend request|video chat|voice chat|video call)\b[^.]{0,60}/gi)].map(x => x[0].trim()); warn(p, `mentions a non-feature — verify context: ${hits.join(' | ')}`); }
+  if (Buffer.byteLength(html) > 60 * 1024) err(p, `${Buffer.byteLength(html)} bytes, over the 60 KB page budget`);
+  faqMirror(p, html);
+  truth(p, html);
 }
+// Truth rules (meetle-app/design/DEPENDENCIES.md): claims the product can't back. Checked against what a reader gets —
+// visible text, alt/aria-label/title/meta content, and JSON-LD string values — never class names or scripts.
+// FORBIDDEN are the design boards' own claims, verbatim: they can't appear even as a denial → error.
+// SUSPECT patterns are warnings: a denial ("we don't check IDs") is fine, a promise is not — read the context.
+// An element carrying data-truth-ok="<reason>" (sourced history about another service, say) is skipped for the SUSPECT
+// warnings only, never for FORBIDDEN; it must not contain a nested element with the same tag name.
+// FAQPage questions in JSON-LD are skipped because faqMirror() has already proved they match the visible answers.
+function collect(v, out) { if (typeof v === 'string') out.push(v); else if (Array.isArray(v)) v.forEach(x => collect(x, out)); else if (v && typeof v === 'object' && v['@type'] !== 'Question') for (const [k, x] of Object.entries(v)) if (!k.startsWith('@')) collect(x, out); }
+function lds(html) { return [...html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)].map(m => { try { return JSON.parse(m[1]); } catch { return null; } }).filter(Boolean); }
+function reader(html) { return html.replace(/<!--[\s\S]*?-->/g, ' ').replace(/<script[^>]*>[\s\S]*?<\/script>/gi, ' ')
+  .replace(/<(?:[^>"']|"[^"]*"|'[^']*')*>/g, t => { const a = [...t.matchAll(/\s(?:alt|aria-label|title|content|placeholder)="([^"]*)"/gi)].map(m => m[1]); return a.length ? '. ' + a.join('. ') + '. ' : ' '; })
+  .replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;|&rsquo;|’/g, "'").replace(/\s+/g, ' '); }
+function truth(p, html) {
+  const ld = []; for (const d of lds(html)) collect(d, ld);
+  scan(p, reader(html) + ' ' + ld.join('. '), reader(html.replace(/<(\w+)\b[^>]*\sdata-truth-ok="[^"]+"[^>]*>[\s\S]*?<\/\1>/g, ' ')) + ' ' + ld.join('. '));
+}
+function scan(p, text, lenient = text) {
+  const hits = (re, t = text) => [...new Set([...t.matchAll(new RegExp(`[^.!?]{0,50}(?:${re.source})[^.!?]{0,40}`, re.flags.includes('i') ? 'gi' : 'g'))].map(m => m[0].trim()))];
+  const FORBIDDEN = [/women[- ]only matching/i, /everyone is ID[- ]checked/i, /\bkeep her\b/i, /reports? get answered/i, /an ID check happens once/i, /moderators? in the room/i];
+  for (const re of FORBIDDEN) for (const h of hits(re)) err(p, `forbidden claim (DEPENDENCIES.md): "${h}"`);
+  const SUSPECT = {
+    'gendered matching (matching has no gender)': /\b(?:women|woman|she|her|hers)\b/i,
+    'ID / age verification (18+ is a stated rule, not a check)': /\bIDs?\b|\b(?:[Vv]erif(?:y|ied|ies|ying|ication)|age (?:check|verification|assurance))\b/,
+    'age "confirmed" (18+ is self-declared: say "you tick", "you say", never "confirmed")': /\bconfirm(?:s|ed|ing|ation)?\b[^.]{0,40}\b(?:18|age)\b|\b(?:18|age)\b[^.]{0,40}\bconfirm(?:s|ed|ing|ation)?\b/i,
+    'report receipts (none exist)': /\b(?:report (?:number|receipt|reference)|what happened to (?:the|their) account|tell you what we did)\b/i,
+    'blocking (does not exist)': /\b(?:block(?:ed|ing|s)?|never (?:be )?matched(?: with you)? again)\b/i,
+    'moderation / scanning (not built)': /\b(?:moderat\w*|scan(?:s|ned|ning)?|nud(?:e|es|ity)|AI)\b/i,
+    'obsolete denial (voice and video now exist, opt-in)': /\b(?:text[- ]only|text chat only|no (?:camera|video|voice|microphone|webcam)s?|not a video chat|there isn't any)\b/i,
+    'request wording (Keep in touch is a blind mutual match)': /\bfriend requests?\b/i,
+  };
+  for (const [what, re] of Object.entries(SUSPECT)) { const h = hits(re, lenient); if (h.length) warn(p, `${what} — verify context: ${h.slice(0, 6).join(' | ')}${h.length > 6 ? ` | …${h.length - 6} more` : ''}`); }
+}
+// FAQPage JSON-LD must say exactly what the page says: every question and answer mirrors one visible
+// <div class="faq-item"><h3>…</h3><p>…</p></div> (tags stripped, entities decoded, whitespace collapsed), and back.
+function plain(s) { return s.replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim(); }
+function faqMirror(p, html) {
+  const items = [...html.matchAll(/<div class="faq-item"[^>]*>\s*<h3>([\s\S]*?)<\/h3>\s*<p>([\s\S]*?)<\/p>\s*<\/div>/g)];
+  const all = (html.match(/class="faq-item"/g) || []).length;
+  if (items.length !== all) err(p, `${all - items.length} .faq-item block(s) aren't one <h3> + one <p> — the FAQPage check can't read them`);
+  const visible = new Map(items.map(m => [plain(m[1]), plain(m[2])]));
+  const qs = []; for (const d of lds(html)) for (const n of [d, ...(d['@graph'] || [])]) if (n['@type'] === 'FAQPage') qs.push(...(n.mainEntity || []));
+  if (!qs.length) { if (visible.size) warn(p, `${visible.size} visible FAQ items but no FAQPage JSON-LD`); return; }
+  for (const q of qs) { const a = visible.get(q.name); if (a === undefined) err(p, `FAQPage JSON-LD question has no visible .faq-item: "${q.name}"`); else if (a !== q.acceptedAnswer?.text) err(p, `FAQPage JSON-LD answer differs from the visible one: "${q.name}"`); }
+  const names = new Set(qs.map(q => q.name)); for (const n of visible.keys()) if (!names.has(n)) err(p, `visible FAQ item missing from FAQPage JSON-LD: "${n}"`);
+}
+// the truth rules also cover what a share or an install shows: the OG card sources and the web manifest
+const MOCKS = path.join(import.meta.dirname, 'mockups');
+for (const f of fs.readdirSync(MOCKS).filter(f => /^og-.*\.html$/.test(f))) truth(path.join(MOCKS, f), fs.readFileSync(path.join(MOCKS, f), 'utf8'));
+{ const mf = path.join(SITE, 'site.webmanifest'); const strs = []; collect(JSON.parse(fs.readFileSync(mf, 'utf8')), strs); scan(mf, strs.join('. ')); }
+// --external: every outbound <a href> must answer 2xx/3xx (HEAD, then GET for servers that refuse HEAD)
+if (EXTERNAL) {
+  const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36';
+  const probe = async (u, method) => { const r = await fetch(u, { method, redirect: 'follow', headers: { 'user-agent': UA, accept: 'text/html,*/*' }, signal: AbortSignal.timeout(20000) }); return r.status; };
+  await Promise.all([...outbound].map(async ([u, p]) => {
+    let status; try { status = await probe(u, 'HEAD'); if (status >= 400) status = await probe(u, 'GET'); } catch (e) { warn(p, `outbound link unreachable from here (${e.cause?.code || e.name}): ${u}`); return; }
+    if (status >= 400) warn(p, `outbound link answers ${status}: ${u}`);
+  }));
+  console.log(`${outbound.size} outbound links requested`);
+}
+// budgets (README "Accessibility and performance gates")
+const sizes = {}; for (const [rel, max] of [['assets/css/site.css', 40 * 1024], ['assets/js/site.js', 8 * 1024]]) { const f = path.join(SITE, rel); sizes[rel] = fs.statSync(f).size; if (sizes[rel] > max) err(f, `${sizes[rel]} bytes, over the ${max}-byte budget`); }
 // sitemap + robots
 const sm = path.join(SITE, 'sitemap.xml'); if (!fs.existsSync(sm)) err(sm, 'missing sitemap.xml'); else { const x = fs.readFileSync(sm, 'utf8'); for (const loc of [...x.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1])) { if (!loc.startsWith(CANON)) err(sm, `loc not on ${CANON}: ${loc}`); const f = path.join(SITE, loc.slice(CANON.length), 'index.html'); if (!fs.existsSync(f)) err(sm, `loc has no page: ${loc}`); } for (const p of pages) { const rel = path.relative(SITE, p); if (rel === '404.html') continue; const url = CANON + rel.replace(/index\.html$/, ''); if (!x.includes(`<loc>${url}</loc>`)) err(sm, `page missing from sitemap: ${url}`); } }
 const rb = path.join(SITE, 'robots.txt'); if (!fs.existsSync(rb)) err(rb, 'missing robots.txt'); else if (!/Sitemap: https:\/\/meetle\.org\/sitemap\.xml/.test(fs.readFileSync(rb, 'utf8'))) err(rb, 'robots.txt must reference https://meetle.org/sitemap.xml');
-console.log(`\n${pages.length} pages checked — ${errors} errors, ${warns} warnings`);
+console.log(`\n${pages.length} pages checked — ${errors} errors, ${warns} warnings · site.css ${sizes['assets/css/site.css']} B, site.js ${sizes['assets/js/site.js']} B`);
 process.exit(errors ? 1 : 0);

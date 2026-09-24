@@ -1,6 +1,6 @@
 /* Meetle marketing site — site.js (vanilla, no dependencies, loaded with defer).
    Set LIVE_APP_URL when the app is public: every `.js-primary-cta` becomes
-   "Start talking" linking there and every `.js-waitlist-note` is hidden. */
+   "Start talking" linking there, every `.js-waitlist-note` is hidden and every `.js-live-note` is shown. */
 const LIVE_APP_URL = '';
 
 (function () {
@@ -11,6 +11,7 @@ const LIVE_APP_URL = '';
   if (LIVE_APP_URL) {
     $$('.js-primary-cta').forEach(function (a) { a.textContent = 'Start talking'; a.setAttribute('href', LIVE_APP_URL); });
     $$('.js-waitlist-note').forEach(function (n) { n.hidden = true; });
+    $$('.js-live-note').forEach(function (n) { n.hidden = false; });
   }
 
   /* ---- Mobile nav toggle ---- */
@@ -27,7 +28,7 @@ const LIVE_APP_URL = '';
       if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') { setOpen(false); toggle.focus(); }
     });
     nav.addEventListener('click', function (e) { if (e.target.closest('a')) setOpen(false); });
-    var mq = window.matchMedia('(min-width: 880px)');
+    var mq = window.matchMedia('(min-width: 720px)');
     var onChange = function (m) { if (m.matches) setOpen(false); };
     if (mq.addEventListener) mq.addEventListener('change', onChange); else if (mq.addListener) mq.addListener(onChange);
   }

@@ -3,24 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Safety on Meetle: real accounts, 18+, reports end chats</title>
-<meta name="description" content="How Meetle keeps random text chat safer: sign-in required, usernames only, 18+ confirmation, a Report button that ends the chat, no saved stranger chats.">
+<title>Safety on Meetle: covered video, one-tap exit, real accounts</title>
+<meta name="description" content="How Meetle makes talking to strangers safer: real accounts, usernames only, 18+, video starts covered, one-tap Leave, quick Report, stranger chats never saved.">
 <link rel="canonical" href="https://meetle.org/safety/">
-<meta name="theme-color" content="#E8513D">
-<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F5EFEC" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1E1917" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
 <meta property="og:site_name" content="Meetle">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="en_US">
-<meta property="og:title" content="Safety on Meetle: real accounts, 18+, reports end chats">
-<meta property="og:description" content="How Meetle keeps random text chat safer: sign-in required, usernames only, 18+ confirmation, a Report button that ends the chat, no saved stranger chats.">
+<meta property="og:title" content="Safety on Meetle: covered video, one-tap exit, real accounts">
+<meta property="og:description" content="How Meetle makes talking to strangers safer: real accounts, usernames only, 18+, video starts covered, one-tap Leave, quick Report, stranger chats never saved.">
 <meta property="og:url" content="https://meetle.org/safety/">
 <meta property="og:image" content="https://meetle.org/assets/og/og-safety.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="meetle — talk first, match later. Random 1-on-1 text chat, no profiles, 18+.">
+<meta property="og:image:alt" content="meetle.org — Nobody sees your face until you say so. Video starts covered. Leave in one tap.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Safety on Meetle: real accounts, 18+, reports end chats">
-<meta name="twitter:description" content="How Meetle keeps random text chat safer: sign-in required, usernames only, 18+ confirmation, a Report button that ends the chat, no saved stranger chats.">
+<meta name="twitter:title" content="Safety on Meetle: covered video, one-tap exit, real accounts">
+<meta name="twitter:description" content="How Meetle makes talking to strangers safer: real accounts, usernames only, 18+, video starts covered, one-tap Leave, quick Report, stranger chats never saved.">
 <meta name="twitter:image" content="https://meetle.org/assets/og/og-safety.png">
 <link rel="icon" href="../favicon.ico" sizes="32x32">
 <link rel="icon" href="../favicon.svg" type="image/svg+xml">
@@ -28,22 +29,21 @@
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
 <link rel="manifest" href="../site.webmanifest">
 <link rel="preload" href="../assets/fonts/nunito-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="../assets/fonts/nunito-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/instrument-serif-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="../assets/fonts/instrument-serif-italic-latin.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="../assets/css/site.css">
 <script src="../assets/js/site.js" defer></script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[
- {"@type":"ListItem","position":1,"name":"Home","item":"https://meetle.org/"},
- {"@type":"ListItem","position":2,"name":"Safety"}]}
+{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://meetle.org/"},{"@type":"ListItem","position":2,"name":"Safety"}]}
 </script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="container">
-    <a class="logo" href="../" aria-label="Meetle home">
-      <img src="../assets/brand/mark-coral.svg" alt="" width="30" height="30">
-      <img src="../assets/brand/wordmark-meetle.svg" alt="meetle" width="351" height="120">
+    <a class="logo" href="../" aria-label="meetle.org home">
+      <svg viewBox="0 0 165.72 165.72" aria-hidden="true" focusable="false"><path fill="currentColor" d="M24.21,87.41c1.58-1.58,3.22-3.1,4.93-4.54-1.7-1.45-3.35-2.97-4.93-4.55C9.25,63.36,0,42.63,0,19.68,0,8.82,8.8,.01,19.67,.01s19.66,8.81,19.66,19.67c0,11.95,4.9,22.81,12.81,30.72,7.75,7.75,18.43,12.59,30.23,12.71h.64c11.94-.04,22.75-4.89,30.57-12.72,7.91-7.91,12.8-18.77,12.8-30.72,0-10.86,8.81-19.67,19.67-19.67s19.67,8.81,19.67,19.67c0,22.95-9.26,43.68-24.22,58.64-1.58,1.58-3.22,3.1-4.93,4.54,1.7,1.45,3.35,2.96,4.93,4.55,14.96,14.96,24.22,35.69,24.22,58.64,0,10.86-8.81,19.67-19.67,19.67H19.67c-10.86,0-19.67-8.8-19.67-19.66,0-22.95,9.25-43.69,24.21-58.64h0Z"/></svg>
+      <span>meetle<span>.org</span></span>
     </a>
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Menu">
       <svg class="i-menu" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
@@ -53,7 +53,6 @@
       <ul>
         <li><a href="../how-it-works/">How it works</a></li>
         <li><a href="../safety/" aria-current="page">Safety</a></li>
-        <li><a href="../faq/">FAQ</a></li>
       </ul>
       <a class="btn btn--primary btn--sm js-primary-cta" href="#waitlist">Join the waitlist</a>
     </nav>
@@ -76,14 +75,23 @@
 <div class="split__copy">
 <p class="eyebrow">No catfish allowed</p>
 <h1>Safety on Meetle</h1>
-<p class="lede">Meetle is built to be a safer random chat: everyone signs in with a real account, everyone is 18 or older, strangers see only your username, nothing you say to a stranger is saved, and Report ends a chat instantly. No random chat is risk-free — here's exactly what we do, what we don't, and what you can do.</p>
+<p class="lede">Meetle is built so you never have to be brave to use it. Everyone signs in with a real account, it's 18+ only, strangers see only your username, nobody sees your face unless you both uncover it, nothing you say to a stranger is saved, and leaving takes one tap. No random chat is risk-free — here's exactly what we do, what we don't, and what you can do.</p>
 </div>
 <div class="split__visual">
-<figure class="photo-frame photo-frame--square">
-<picture>
-<source type="image/webp" srcset="../assets/img/photos/huddle-laugh-480.webp 480w, ../assets/img/photos/huddle-laugh-960.webp 960w, ../assets/img/photos/huddle-laugh-1440.webp 1440w" sizes="(min-width: 900px) 540px, calc(100vw - 40px)">
-<img src="../assets/img/photos/huddle-laugh-960.jpg" srcset="../assets/img/photos/huddle-laugh-480.jpg 480w, ../assets/img/photos/huddle-laugh-960.jpg 960w, ../assets/img/photos/huddle-laugh-1440.jpg 1440w" sizes="(min-width: 900px) 540px, calc(100vw - 40px)" width="1440" height="1443" alt="Four friends in beanies and jackets sitting on the ground in a huddle, doubled over laughing." fetchpriority="high" decoding="async" style="background-image:url(data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAABQBQCdASoYABgAPu1ep06ppKMiMBgMATAdiWUAt7gM/IQnkKeZpxlnW5R/ouPCxeQ7oQAAzbVDFCYDQYo+/U1Hwt/NmAX9BMwLnQra8j9roS1F+q3dYt00DFBATbLgA6ZC6ydDgujR7XqDRoql2YAA)">
-</picture>
+<figure class="art" role="img" aria-label="Drawing: two people walking away down a path at dusk, still talking.">
+<svg viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+<rect width="600" height="400" fill="#F0DCCE"/>
+<rect y="170" width="600" height="230" fill="#D9BCA8"/>
+<path d="M222 400l48-230h60l48 230z" fill="#E4CBB8"/>
+<path d="M240 400v-84c0-22 15-38 36-38s36 16 36 38v84z" fill="#7A3A2C"/>
+<circle cx="276" cy="256" r="24" fill="#7A3A2C"/>
+<path d="M324 400v-78c0-20 15-34 33-34s33 14 33 34v78z" fill="#8C4634"/>
+<circle cx="357" cy="270" r="21" fill="#8C4634"/>
+<path d="M298 232c14-10 32-12 48-4" stroke="#E8513D" stroke-width="5" fill="none" stroke-linecap="round"/>
+<rect width="600" height="400" fill="#E8513D" opacity=".08"/>
+</svg>
+<svg class="grain" aria-hidden="true" focusable="false"><filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.82" numOctaves="3"/><feColorMatrix type="saturate" values="0"/></filter><rect width="100%" height="100%" filter="url(#grain)"/></svg>
+<p class="art__slug art__slug--ink" aria-hidden="true">WALKING HOME · 19:40</p>
 </figure>
 </div>
 </div>
@@ -91,17 +99,17 @@
 </div>
 
 <!-- S1 + S2 — What we do: signed in · 18+ -->
-<section class="section" id="what-we-do">
+<section class="section section--band" id="what-we-do">
 <div class="container">
 <p class="eyebrow">What we do</p>
 <div class="split split--top">
 <div class="split__copy" id="signed-in">
 <h2>Everyone is <em>signed in</em></h2>
-<p>There are no throwaway accounts on Meetle. You sign in with Google, Discord or GitHub. That isn't to make you jump through hoops — it's so that when someone gets reported there's a real account behind the username, not a browser tab someone can just reopen. What you don't have to do is build a profile. No photos, no bio, nothing to fake and nothing to be judged on.</p>
+<p>There's no guest mode on Meetle. You sign in with Google, Discord or GitHub. That isn't to make you jump through hoops — it's so there's a real account behind every username, not a browser tab someone can just reopen. What you don't have to do is build a profile. No photos, no bio, nothing to fake and nothing to be judged on.</p>
 </div>
 <div class="split__copy" id="age">
 <h2>18 or <em>older</em></h2>
-<p>You confirm you're 18 or older before the Start Chat button turns on, every time. We'll be straight with you: it's a confirmation, not an ID check. We don't verify identity, and we won't pretend we do. It's a firm rule all the same, and accounts found to belong to someone under 18 will be removed. If someone tells you they're under 18, end the chat and report them.</p>
+<p>You tick "I'm 18 or over" before Start talking turns on. We'll be straight with you: it's a promise you make, not a document check, and we won't pretend otherwise. It's a firm rule all the same, and accounts found to belong to someone under 18 will be removed. If someone seems to be under 18, report them — "They seem to be under 18" is one of the answers.</p>
 </div>
 </div>
 </div>
@@ -113,15 +121,15 @@
 <div class="split split--visual-first">
 <div class="split__copy">
 <p class="eyebrow">What strangers see</p>
-<h2>A username and a <em>throwaway</em> id</h2>
-<p>During a chat the other person sees two things: your username and a temporary id like user_a83f91 that changes every time you connect. Your email, your sign-in provider and your account id are never shown to anyone. There's no way to look you up, search for you, or message you again unless you've matched as friends. There is nothing on Meetle to catfish with, because there's no picture to fake.</p>
+<h2>A username, and <em>that's it</em></h2>
+<p>During a conversation the other person sees your username and how long you've been talking. Your email, your sign-in provider and your account are never shown to anyone. There's no way to look you up, search for you, or message you again unless you both chose to keep in touch. There's nothing on Meetle to catfish with, because there's no picture to fake — and your voice and your face stay yours unless you both choose voice or video.</p>
 </div>
 <div class="split__visual">
-<figure class="mock mock--zoom" role="img" aria-label="What a stranger sees on Meetle: the username QuietStorm, the throwaway id user_a83f91 and an Add friend button, with email, real name, photo, account id and location crossed out.">
+<figure class="mock zoom" role="img" aria-label="What a stranger sees on Meetle: the username maya_reads and “Talking · 4 min”, with Report and Leave beside it. Email, real name, photo, account and location are crossed out.">
 <div aria-hidden="true">
-<div class="mock-zoom__row"><span class="ui-avatar">Q</span><span class="ui-partner__meta"><span class="ui-partner__name">QuietStorm</span><span class="ui-partner__id">user_a83f91</span></span><span class="ui-pill"><svg viewBox="19 18 30 30"><path d="M28.625 32.125 33.125 22a3.375 3.375 0 0 1 3.375 3.375v4.5h6.367a2.251 2.251 0 0 1 2.25 2.587l-1.552 10.125a2.25 2.25 0 0 1-2.25 1.913h-12.69m0-12.375V44.5m0-12.375H25.25a2.25 2.25 0 0 0-2.25 2.25v7.875a2.25 2.25 0 0 0 2.25 2.25h3.375" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>Add friend</span></div>
-<ul class="mock-zoom__callouts"><li>the username they chose</li><li>a throwaway id, new every connection</li><li>the only button that matters</li></ul>
-<p class="mock-zoom__strike"><s>email</s> · <s>real name</s> · <s>photo</s> · <s>account id</s> · <s>location</s></p>
+<div class="device device--zoom"><div class="device__body"><div class="ui"><div class="ui-head"><span class="ui-av">M</span><span class="ui-who"><b>maya_reads</b><span>Talking · 4 min</span></span><span class="ui-disc"><svg viewBox="0 0 24 24"><path d="M6 21V4h11l-2.5 4L17 12H6"/></svg></span><span class="ui-disc ui-disc--leave"><svg viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 16l-4-4 4-4M6 12h9"/></svg></span></div></div></div></div>
+<ul class="zoom__callouts"><li>the username they chose</li><li>minutes, never seconds</li><li>the way out, always here</li></ul>
+<p class="zoom__strike"><s>email</s> · <s>real name</s> · <s>photo</s> · <s>account</s> · <s>location</s></p>
 </div>
 </figure>
 </div>
@@ -129,121 +137,148 @@
 </div>
 </section>
 
-<!-- S4 — Report -->
+<!-- S4 — Covered video -->
+<section class="band" id="covered-video" aria-labelledby="covered-video-title">
+<div class="container split">
+<div class="split__copy">
+<p class="eyebrow">Voice and video</p>
+<h2 id="covered-video-title">Nobody sees you <em>first</em></h2>
+<p class="band__lede">Voice and video never start on their own. You both have to choose them, and either of you can stay in text for the whole conversation.</p>
+<ul class="checklist">
+<li>Video starts covered for both of you. All either of you sees is a blur.</li>
+<li>It only uncovers when you both tap. One tap isn't enough.</li>
+<li>Either of you can cover it again, instantly.</li>
+<li>Voice and video aren't recorded.</li>
+</ul>
+<p class="band__lede mb-0">We can't stop someone recording their own screen, so uncover only when you'd be fine being seen. If anyone pushes you to, you don't owe them anything: leave, or report them.</p>
+</div>
+<div class="split__visual">
+<figure class="mock mock--phone" role="img" aria-label="Meetle video with maya_reads, covered: both pictures are blurred. A card says video is covered for both of you and only uncovers when you both tap, with an Uncover button. Report and Leave sit in the top corner, where they are in every conversation; mute and cover sit at the bottom.">
+<div class="device device--phone" aria-hidden="true"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-vid"><span class="ui-tag"><i></i>maya_reads<span>· covered</span></span><span class="ui-vid__acts"><span class="ui-disc"><svg viewBox="0 0 24 24"><path d="M6 21V4h11l-2.5 4L17 12H6"/></svg></span><span class="ui-disc ui-disc--leave"><svg viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 16l-4-4 4-4M6 12h9"/></svg></span></span><span class="ui-self"><b>You</b></span><div class="ui-cover"><b>Video is covered for both of you.</b><p>It uncovers only when you both tap. Either of you can cover it again, instantly.</p><span class="ui-btn ui-btn--sky">Uncover</span></div><div class="ui-ctrls"><span><svg viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></span><span><svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg></span></div></div>
+</div></div></div></div>
+</figure>
+</div>
+</div>
+</section>
+
+<!-- S5 — Leave and report -->
 <section class="section" id="report">
 <div class="container">
-<div class="section-head section-head--center">
-<p class="eyebrow">Report</p>
+<div class="split">
+<div class="split__copy">
+<p class="eyebrow">Leave and report</p>
 <h2>One tap <em>ends</em> it</h2>
-<p>Tap Report and three things happen at once: the chat ends for both of you, the report is recorded, and you're put back in line for someone new. You don't have to explain, argue or wait. The person you reported just sees that you left, and they can't find you again. Every account is signed in, so a report has somewhere to stick — bans for accounts that keep getting reported are the next thing we're building. Next and Stop are always there too: you never need a reason to leave.</p>
+<p>Leave is always in the same corner. One tap and the conversation is over — no confirmation, no "are you sure", no reason. They see "riley_m headed off." and nothing else.</p>
+<p class="mb-0">Report sits right next to it. It asks what happened, with one-tap answers, and "Just get me out" comes first for when choosing is too much. Either way the conversation ends at once and you're back at the start. On their side it looks exactly like you left; nothing tells them it was a report. There's no search and no profile, so there's no way for them to look you up afterwards.</p>
 </div>
-<figure class="mock mock--pair mock--pair-plain" role="img" aria-label="Meetle's report confirmation, &quot;Report QuietStorm and end the chat?&quot;, followed by the &quot;Looking for someone…&quot; screen.">
-<div class="mock-pair__col" aria-hidden="true">
-<div class="device device--phone"><div class="device__body"><div class="device__screen"><div class="ui">
-<div class="ui-top"><img src="../assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span class="is-active">Chat</span><span>Friends</span></div><span class="ui-me">riley_m</span></div>
-<div class="ui-partner"><span class="ui-avatar">Q</span><span class="ui-partner__meta"><span class="ui-partner__name">QuietStorm</span><span class="ui-partner__id">user_a83f91</span></span><span class="ui-pill"><svg viewBox="19 18 30 30"><path d="M28.625 32.125 33.125 22a3.375 3.375 0 0 1 3.375 3.375v4.5h6.367a2.251 2.251 0 0 1 2.25 2.587l-1.552 10.125a2.25 2.25 0 0 1-2.25 1.913h-12.69m0-12.375V44.5m0-12.375H25.25a2.25 2.25 0 0 0-2.25 2.25v7.875a2.25 2.25 0 0 0 2.25 2.25h3.375" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>Add friend</span></div>
-<p class="ui-sys">You are now chatting with QuietStorm. Say hi!</p>
-<div class="ui-msgs">
-<p class="ui-msg">ok honest question. is this basically omegle but with actual humans?</p>
-<p class="ui-msg ui-msg--me">pretty much. no camera though. and if we both tap add friend we get to keep talking</p>
-<p class="ui-msg">and if only one of us does?</p>
-</div>
-<div class="ui-composer"><span class="ui-input">Type a message…</span><span class="ui-btn">Send</span></div>
-<div class="ui-controls"><span class="ui-btn">Next</span><span class="ui-btn ui-btn--outline">Stop</span><span class="ui-btn ui-btn--danger">Report</span></div>
-</div>
-<div class="ui-dim"><div class="ui-sheet"><p>Report QuietStorm and end the chat?</p><div class="ui-sheet__btns"><span class="ui-btn ui-btn--red">Report</span><span class="ui-btn ui-btn--outline">Cancel</span></div></div></div>
-</div></div></div>
-</div>
-<div class="mock-pair__col" aria-hidden="true">
-<div class="device device--phone"><div class="device__body"><div class="device__screen"><div class="ui">
-<div class="ui-top"><img src="../assets/brand/mark-coral.svg" alt="" width="24" height="24"><div class="ui-tabs"><span class="is-active">Chat</span><span>Friends</span></div><span class="ui-me">riley_m</span></div>
-<div class="ui-center"><div class="ui-dots"><i></i><i></i><i></i></div><p>Looking for someone…</p><span class="ui-btn ui-btn--outline">Stop</span></div>
+<div class="split__visual">
+<div class="stage">
+<figure class="mock mock--phone" role="img" aria-label="Meetle’s report sheet over a conversation: “What happened?”, with “Just get me out” first and then five one-tap answers.">
+<div class="device device--phone" aria-hidden="true"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-head"><span class="ui-av">M</span><span class="ui-who"><b>maya_reads</b><span>Talking · 4 min</span></span><span class="ui-disc"><svg viewBox="0 0 24 24"><path d="M6 21V4h11l-2.5 4L17 12H6"/></svg></span><span class="ui-disc ui-disc--leave"><svg viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 16l-4-4 4-4M6 12h9"/></svg></span></div>
+<div class="ui-thread"><p class="ui-note"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>You’re talking to maya_reads. Nothing here is saved.</p><p class="ui-b">hey</p><p class="ui-b">send a pic first</p><p class="ui-b ui-b--me">no thanks</p><p class="ui-b">come on</p></div>
+<div class="ui-comp"><div class="ui-chips"><span class="ui-chip"><svg viewBox="0 0 24 24"><path d="M5 8h11v5a5 5 0 0 1-5 5h-1a5 5 0 0 1-5-5zM16 9.5h1.5a2.5 2.5 0 0 1 0 5H16"/></svg>Play something</span><span class="ui-chip"><svg viewBox="0 0 24 24"><circle cx="7" cy="8" r="2.6"/><circle cx="17" cy="16" r="2.6"/><path d="M9.2 9.6l5.6 4.8"/></svg>Keep in touch</span></div><div class="ui-send-row"><span class="ui-in">Say something</span><span class="ui-send"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div></div>
+<div class="ui-dim"><div class="ui-sheet"><b>What happened?</b><span class="ui-opt ui-opt--out">Just get me out</span><span class="ui-opt">They asked for photos or something sexual</span><span class="ui-opt">They showed me something I didn’t agree to see</span><span class="ui-opt">They wouldn’t take no for an answer</span><span class="ui-opt">They seem to be under 18</span><span class="ui-opt">Something else</span></div></div>
 </div></div></div></div>
-</div>
 </figure>
+<figure class="mock mock--phone" role="img" aria-label="Meetle start screen after a report, with the line “Reported. Thank you for telling us.” above “Talk to someone new.”">
+<div class="device device--phone" aria-hidden="true"><div class="device__body"><div class="device__screen"><div class="ui">
+<div class="ui-screen"><span class="ui-logo"><img src="../assets/brand/mark-coral.svg" alt="" width="20" height="20">meetle</span><p class="ui-note">Reported. Thank you for telling us.</p><div class="ui-grow"></div><p class="ui-title">Talk to someone new.</p><p class="ui-body">No profile, no photo. Just a conversation, for as long as you want one.</p><div class="ui-grow"></div><span class="ui-check"><i><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></i>I’m 18 or over</span><span class="ui-btn">Start talking</span><span class="ui-link">The people you kept</span></div>
+</div></div></div></div>
+</figure>
+</div>
+</div>
+</div>
 </div>
 </section>
 
-<!-- S5 — Nothing saved -->
-<section class="section" id="nothing-saved">
+<!-- S6 — Nothing saved -->
+<section class="section section--band" id="nothing-saved">
 <div class="container">
 <div class="section-head mb-0">
 <p class="eyebrow">Nothing saved</p>
 <h2>When it's over, it's <em>gone</em></h2>
-<p>Stranger chats are <a href="../privacy/">never stored</a>. They pass through our server in memory and are gone when the chat ends — not in a database, not "for moderation", not for training anything. That means nobody, not another user and not us, can pull up what you said to a stranger last night. The one exception is on purpose: messages with a matched friend are saved so you can both read them later.</p>
+<p class="mb-0">Stranger conversations are <a href="../privacy/">never stored</a>. They pass through our server in memory and are gone when the conversation ends — not in a database, not in a log, not for training anything. Voice and video aren't recorded either. That means nobody, not another user and not us, can pull up what you said to a stranger last night. The one exception is on purpose: once you've kept each other, what you send each other in The people you kept is saved, so you can both read it later.</p>
 </div>
 </div>
 </section>
 
-<!-- S6 — Built in -->
+<!-- S7 — Built in -->
 <section class="section" id="built-in">
 <div class="container">
-<div class="split">
-<div class="split__copy">
+<div class="section-head">
 <p class="eyebrow">Built in</p>
 <h2>The boring, <em>invisible</em> stuff</h2>
 </div>
-<div class="split__visual">
-<div class="card">
-<ul class="checklist mb-0">
-<li>Messages cap at 1,000 characters and are rate-limited, so nobody can flood your screen.</li>
-<li>Pairing happens on the server. Nobody can pick who they get matched with, be in two chats with you at once, or message you by id.</li>
-<li>Nothing on your screen ever ties a stranger back to their real account, and nothing on theirs ties back to yours.</li>
-<li>Next and Stop are always one tap away. Leaving is normal here.</li>
+<ul class="grid grid--3 list-plain mb-0">
+<li class="card"><h3>No flooding</h3><p>Messages cap at 1,000 characters and are rate-limited, so nobody can flood your screen.</p></li>
+<li class="card"><h3>Nobody picks you</h3><p>Pairing happens on the server. Nobody can choose who they're matched with, or message you unless you both kept each other.</p></li>
+<li class="card"><h3>Keeping is blind</h3><p>Nobody finds out you tapped Keep in touch unless they tapped it too. No badge, no list, no notification.</p></li>
+<li class="card"><h3>No trail back</h3><p>Nothing on your screen ever ties a stranger to their real account, and nothing on theirs ties back to yours.</p></li>
+<li class="card"><h3>Games wait for a yes</h3><p>Nothing starts until the other person taps Play, and either of you can put a game away any time.</p></li>
+<li class="card"><h3>Leaving is normal</h3><p>Leave is always one tap away, in the same corner. Nobody is ever told why.</p></li>
 </ul>
-</div>
-</div>
-</div>
 </div>
 </section>
 
-<!-- S7 — Your part -->
-<section class="section" id="your-part">
+<!-- S8 — Your part -->
+<section class="section section--band" id="your-part">
 <div class="container">
 <div class="split split--copy-wide">
 <div class="split__copy">
 <p class="eyebrow">Your part</p>
-<h2>Five things worth <em>remembering</em></h2>
+<h2>Six things worth <em>remembering</em></h2>
 <ol class="numbered">
 <li><strong>Keep it in Meetle.</strong> Don't move to another app until you'd hand this person your number in real life.</li>
-<li><strong>Your username is enough.</strong> No last name, school, workplace, address, or the name of your street. Friends can earn that later, in DMs, at your pace.</li>
-<li><strong>Nobody here needs your money.</strong> No gift cards, no crypto, no "verification codes". Anyone who asks is running a scam. Report them.</li>
-<li><strong>Trust the weird feeling.</strong> Next costs nothing.</li>
-<li><strong>Meeting a friend in real life is a big step.</strong> Public place, daytime, tell someone.</li>
+<li><strong>Your username is enough.</strong> No last name, school, workplace, address, or the name of your street. People you kept can earn that later, at your pace.</li>
+<li><strong>Uncover only when you'd be fine being seen.</strong> You can cover again instantly, but nobody can stop someone recording their own screen.</li>
+<li><strong>Nobody here needs your money.</strong> No gift cards, no crypto, no codes sent to your phone. Anyone who asks is running a scam. Report them.</li>
+<li><strong>Trust the weird feeling.</strong> Leave costs nothing.</li>
+<li><strong>Meeting someone in real life is a big step.</strong> Public place, daytime, tell someone.</li>
 </ol>
-<p class="small muted">The long version is in the <a href="../terms/">Terms</a>.</p>
+<p class="small muted mb-0">The long version is in the <a href="../terms/">Terms</a>.</p>
 </div>
 <div class="split__visual">
-<figure class="photo-frame photo-frame--square">
-<picture>
-<source type="image/webp" srcset="../assets/img/photos/skate-crew-480.webp 480w, ../assets/img/photos/skate-crew-960.webp 960w, ../assets/img/photos/skate-crew-1440.webp 1440w" sizes="(min-width: 900px) 540px, calc(100vw - 40px)">
-<img src="../assets/img/photos/skate-crew-960.jpg" srcset="../assets/img/photos/skate-crew-480.jpg 480w, ../assets/img/photos/skate-crew-960.jpg 960w, ../assets/img/photos/skate-crew-1440.jpg 1440w" sizes="(min-width: 900px) 540px, calc(100vw - 40px)" width="1440" height="1440" alt="A group of friends laughing around a skateboarder crouched mid-trick on a sunny concrete lot." loading="lazy" decoding="async" style="background-image:url(data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAABwBQCdASoYABgAPt1cpU2opSOiN/qoARAbiWMAs4Ah2eAWK0dZ4kJ744E8L+o1d1VG7AyAAP6UwXizpsvOL/hUNwo0IkPOV3MZAhacciHf2vV8t7HYZKwIKNUkXoB7wjylNVP/AZEpC5NN0AA=)">
-</picture>
-</figure>
+<div class="draw draw--dark" role="img" aria-label="Drawing: one unbroken line that becomes two seated people, with the conversation between them.">
+<svg viewBox="0 0 400 230" aria-hidden="true" focusable="false">
+<g fill="none" stroke="#EFE7E3" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round">
+<path d="M14,206 c0,-34 16,-52 42,-52 26,0 40,18 40,44"/>
+<path d="M56,154 a22,22 0 1 0 0,-44 a22,22 0 0 0 0,44"/>
+<path d="M96,198 c34,-2 46,-16 58,-34 14,-20 30,-30 54,-30 26,0 42,12 56,32 12,18 26,32 58,34"/>
+<path d="M344,154 a22,22 0 1 0 0,-44 a22,22 0 0 0 0,44"/>
+<path d="M386,206 c0,-34 -16,-52 -42,-52 -26,0 -40,18 -40,44"/>
+<path d="M170,96 c14,-12 46,-12 60,0" stroke="#F2705C"/>
+</g>
+<circle cx="200" cy="66" r="7" fill="#4EC2EF"/>
+</svg>
+</div>
 </div>
 </div>
 </div>
 </section>
 
-<!-- S8 — Honest about the gaps -->
+<!-- S9 — Honest about the gaps -->
 <section class="section" id="honestly">
 <div class="container">
 <div class="section-head mb-0">
 <p class="eyebrow">Honestly</p>
 <h2>Being honest about the <em>gaps</em></h2>
-<p>Meetle is new. Right now <a href="../faq/#report">a report ends the chat and is recorded</a> — nobody is banned yet, and nobody reads stranger chats, because they aren't stored. We're a small team, not a moderation department. Bans for repeatedly reported accounts are the next thing we're building; automatic moderation inside live chats is after that. We'll say what's live on this page, and we won't promise dates. If something on Meetle worried you and Report wasn't enough, email <a href="mailto:hello@meetle.org">hello@meetle.org</a> — a person reads it.</p>
+<p class="mb-0">Meetle is new. Right now <a href="../faq/#report">a report ends the conversation and is recorded</a> — nobody is banned yet, and nobody reads stranger conversations, because they aren't stored. We're a small team, and we'd rather tell you what's live than promise what isn't. Bans for accounts that keep getting reported are on the roadmap; we'll say so on this page when they're live, and we won't promise dates. If something on Meetle worried you and Report wasn't enough, email <a href="mailto:hello@meetle.org">hello@meetle.org</a> — a person reads it.</p>
 </div>
 </div>
 </section>
 
-<!-- S9 — Join -->
-<section class="section" id="join">
+<!-- S10 — Join -->
+<section class="section section--band" id="join">
 <div class="container">
 <div class="section-head section-head--center">
 <p class="eyebrow">Join us</p>
 <h2>Talk to strangers <em>without</em> the sketchy part</h2>
-<p>Join the Meetle waitlist and get chatting — real convos, no profiles.</p>
+<p class="js-waitlist-note">Join the Meetle waitlist and get talking — real conversations, no profiles.</p>
+<p class="js-live-note" hidden>Real conversations, no profiles. It's free, and it works in your browser.</p>
 </div>
+<div class="js-waitlist-note">
 <div class="waitlist waitlist--center" id="waitlist">
   <form class="js-waitlist" method="post" data-endpoint="">
     <fieldset>
@@ -260,16 +295,18 @@
   </form>
 </div>
 </div>
+<p class="js-live-note center" hidden><a class="btn btn--primary btn--lg js-primary-cta" href="#waitlist">Join the waitlist</a></p>
+</div>
 </section>
 
 </main>
 <footer class="site-footer">
   <div class="container">
-    <div class="site-footer__brand">
-      <img src="../assets/brand/wordmark-meetle-dark.svg" alt="meetle" width="351" height="120">
-      <img src="../assets/brand/tagline-talk-first-match-later.svg" alt="talk first, match later" width="1057" height="120">
-    </div>
-    <p class="site-footer__tag">Rhythms without algorithms.</p>
+    <a class="logo" href="../" aria-label="meetle.org home">
+      <svg viewBox="0 0 165.72 165.72" aria-hidden="true" focusable="false"><path fill="currentColor" d="M24.21,87.41c1.58-1.58,3.22-3.1,4.93-4.54-1.7-1.45-3.35-2.97-4.93-4.55C9.25,63.36,0,42.63,0,19.68,0,8.82,8.8,.01,19.67,.01s19.66,8.81,19.66,19.67c0,11.95,4.9,22.81,12.81,30.72,7.75,7.75,18.43,12.59,30.23,12.71h.64c11.94-.04,22.75-4.89,30.57-12.72,7.91-7.91,12.8-18.77,12.8-30.72,0-10.86,8.81-19.67,19.67-19.67s19.67,8.81,19.67,19.67c0,22.95-9.26,43.68-24.22,58.64-1.58,1.58-3.22,3.1-4.93,4.54,1.7,1.45,3.35,2.96,4.93,4.55,14.96,14.96,24.22,35.69,24.22,58.64,0,10.86-8.81,19.67-19.67,19.67H19.67c-10.86,0-19.67-8.8-19.67-19.66,0-22.95,9.25-43.69,24.21-58.64h0Z"/></svg>
+      <span>meetle<span>.org</span></span>
+    </a>
+    <p class="site-footer__tag">just <em>talk</em></p>
     <ul class="site-footer__links">
       <li><a href="../how-it-works/">How it works</a></li>
       <li><a href="../safety/">Safety</a></li>
@@ -277,10 +314,10 @@
       <li><a href="../omegle-alternative/">Omegle alternative</a></li>
       <li><a href="../privacy/">Privacy</a></li>
       <li><a href="../terms/">Terms</a></li>
+      <li><a href="mailto:hello@meetle.org">Contact a human</a></li>
       <li><a href="https://github.com/meetle-org" rel="me">GitHub</a></li>
     </ul>
-    <p class="site-footer__legal">© 2026 Meetle. All rights reserved.</p>
-    <p class="site-footer__legal">18+ only. Text chat only. Stranger chats are never saved.</p>
+    <p class="site-footer__legal">18+ · © 2026 Meetle</p>
   </div>
 </footer>
 </body>
