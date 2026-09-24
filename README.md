@@ -1,10 +1,10 @@
 # Meetle marketing site
 
-The public website for **Meetle** — *just talk* — a random one-on-one conversation with a stranger: text first, voice and video only when both people choose them (video starts covered), and keeping in touch is a blind mutual match. Lives at **https://meetle.org** (until DNS moves: https://meetle-org.github.io/marketing-site/).
+The public website for **Meetle** — *talk first, match later* — a random one-on-one conversation with a stranger: text first, voice and video only when both people choose them (video starts covered), and keeping in touch is a blind mutual match. Lives at **https://meetle.org**.
 
 - **Static.** Plain HTML + one CSS file + one small JS file. No framework, no build step for HTML, no third-party requests of any kind (fonts, icons and scripts are all self-hosted).
-- **Hosted on GitHub Pages** from this repo (`meetle-org/marketing-site`) via the Actions workflow in `.github/workflows/pages.yml`. The published folder is `site/`.
-- **Launch-ready in source.** `site/` is always authored as the live site (indexable, canonicals on `https://meetle.org/…`). A deploy step adds `noindex` while we are still on the github.io staging URL — see [Staging → launch](#staging--launch).
+- **Hosted on GitHub Pages** from this repo (`meetle-org/landing-page`, public), which serves the **`gh-pages` branch** as is: Settings → Pages is "Deploy from a branch", `gh-pages`, `/` (root), custom domain `meetle.org`, HTTPS enforced. There is no Actions workflow. `site/` is what gets published, and `tools/publish-ghpages.sh` mirrors it onto `gh-pages` with deletion — see [Publishing](#publishing).
+- **Launch-ready in source.** `site/` is always authored as the live site (indexable, canonicals on `https://meetle.org/…`). The publish step would add `noindex` if meetle.org ever stopped serving Pages; it does serve them, so today nothing is added.
 
 ## Folder layout
 
@@ -14,27 +14,29 @@ site/                       ← the published root (what GitHub Pages serves)
   how-it-works/index.html     /how-it-works/
   safety/index.html           /safety/
   faq/index.html              /faq/
-  omegle-alternative/index.html
   privacy/index.html          /privacy/       draft, needs legal review
   terms/index.html            /terms/         draft, needs legal review
   404.html                    served at any depth → its links are absolute
   robots.txt · sitemap.xml · site.webmanifest · favicon.* · apple-touch-icon.png · icon-192/512.png
-  assets/css/site.css         the whole design system (≈39 KB, budget 40 KB — the checker enforces it)
+  assets/css/site.css         the whole design system (≈37 KB, budget 40 KB — the checker enforces it)
   assets/js/site.js           nav toggle + waitlist form + live-app switch (≈5 KB, budget 8 KB)
   assets/fonts/               Nunito (normal + italic, variable), Instrument Serif (normal + italic), DM Mono 400 — latin woff2, all SIL OFL 1.1 (OFL.txt: notices + licence)
   assets/brand/               mark B (mark-coral / mark-black) — the only brand files; the lockup is live text
-  assets/og/                  1200×630 Open Graph cards (home, how-it-works, safety, omegle-alternative)
+  assets/og/                  1200×630 Open Graph cards (home, how-it-works, safety)
 tools/                      ← node scripts (never shipped). `cd tools && npm install` once (sharp).
-  check-site.mjs              static checks: SEO tags, links + #fragment targets, images, JSON-LD, sitemap, truth rules → must print 0 errors
+  check-site.mjs              static checks: SEO tags, links + #fragment targets, images, JSON-LD, sitemap, truth rules, brand rules → must print 0 errors
   screenshot-pages.mjs        every page at 390 / 820 / 1440 → tools/out/screens/*.png
   render-mockups.mjs          tools/mockups/og-*.html → OG cards
   build-photos.mjs            source photos → responsive sets + manifest.json (LQIP) — unused today, see Images
   build-favicons.mjs          brand mark → favicon.svg/.ico/.png, apple-touch-icon, icon-192/512
-  deploy-prepare.sh           staging/launch switch, run by CI right before upload
+  publish-ghpages.sh          site/ → the gh-pages worktree: mirror with deletion, verify, optional local commit (never pushes)
+  deploy-prepare.sh           staging/launch switch; publish-ghpages.sh runs it on the gh-pages copy
+  check-live.mjs              read-only: what meetle.org serves vs site/ (stale files, unpublished changes, brand rules)
   snippets/                   the shared partials every page is built from (see below)
-  mockups/                    standalone wrappers for the four OG cards (+ _og.css)
-.github/workflows/pages.yml ← deploy on push to main, on demand, and daily at 05:23 UTC
+  mockups/                    standalone wrappers for the three OG cards (+ _og.css)
 ```
+
+The `gh-pages` branch is `site/` plus `CNAME` (`meetle.org`) and `.nojekyll`, and nothing else. Keep it checked out in a second worktree next to this one (`git worktree add ../landing-ghpages -b gh-pages-deploy origin/gh-pages`); never edit it by hand.
 
 ## Everyday commands
 
@@ -44,20 +46,29 @@ node tools/check-site.mjs --external   # also requests every outbound link (sour
 node tools/screenshot-pages.mjs    # then look at tools/out/screens/<page>-{phone,tablet,desktop}.png
 node tools/screenshot-pages.mjs faq --slice   # one page only, plus 1600px-tall slices for easier reading
 node tools/screenshot-pages.mjs home --night  # the night palette (the site follows prefers-color-scheme); light is forced otherwise
-node tools/render-mockups.mjs      # regenerate site/assets/og/*.png (or: node tools/render-mockups.mjs og-safety)
+node tools/render-mockups.mjs      # regenerate the share cards in site/assets/og/ (or: node tools/render-mockups.mjs og-safety)
+tools/publish-ghpages.sh ../landing-ghpages --dry-run   # what publishing would add, change and delete on gh-pages
+node tools/check-live.mjs          # after a publish: does meetle.org serve exactly site/?
 ```
 
-`check-site` enforces the **truth rules** (`meetle-app/design/DEPENDENCIES.md`) on everything a reader gets — visible text, alt / aria-label / meta content and JSON-LD on every page, plus the OG card sources (`tools/mockups/og-*.html`) and `site.webmanifest`; never class names or scripts:
+`check-site` enforces the **brand rules** (below, all errors) and the **truth rules** (`meetle-app/design/DEPENDENCIES.md`) on everything a reader gets — visible text, alt / aria-label / meta content and JSON-LD on every page, plus the OG card sources (`tools/mockups/og-*.html`) and `site.webmanifest`; never class names or scripts:
 
 - **Error** on the design boards' own claims, verbatim: *Women-only matching*, *Everyone is ID checked*, *Keep her*, *Reports get answered*, *An ID check happens once*, *moderators in the room*. They can't ship even as a denial.
 - **Warning** (read the context — a denial is fine, a promise is not) on: gendered matching (*she / her / woman*: matching has no gender), ID or age verification (18+ is a stated rule, never "verified"), *confirm(ed)* within a sentence of *18* or *age* (the 18+ box is self-declared: write "you tick", "you say", never "confirmed"), report receipts, blocking / "never matched again" (no Block exists), moderation, scanning or AI (not built), request wording (*friend request*), and **obsolete denials** — *text only, no camera, no video, no voice, not a video chat* — which stopped being true when opt-in voice and video shipped.
 
 Every page produces none today, so any new warning is worth reading. Two escape hatches, both deliberate:
 
-- `data-truth-ok="<reason>"` on an element skips it for the **warnings only** (never the errors) — used once, on `/omegle-alternative/`, for Omegle's own sourced history ("three moderators for video chat…"). It must not contain a nested element with the same tag name.
+- `data-truth-ok="<reason>"` on an element skips it for the **warnings only** (never the errors) — unused today; it is meant for a quoted source. It must not contain a nested element with the same tag name.
 - FAQPage questions in JSON-LD aren't scanned twice: the checker first proves every JSON-LD question and answer equals a visible `<div class="faq-item"><h3>…</h3><p>…</p></div>` (tags stripped, entities decoded) and vice versa, and errors if they drift. Keep each FAQ item to one `<h3>` and one `<p>`.
 
-It also errors when a page is over 60 KB, `site.css` over 40 KB or `site.js` over 8 KB, and prints both sizes on the summary line. Links: every relative target must exist, and so must every `#fragment` — in-page, on a relative page (`../faq/#anonymous`) and on the 404's absolute `https://meetle.org/…#…` links. Outbound links are only requested with `--external` (it needs the network; the old NPR source link was a 404 for this reason).
+It also errors when a page is over 60 KB, `site.css` over 40 KB or `site.js` over 8 KB, and prints both sizes on the summary line. Share cards: every `og:image` must exist in `site/` and stay under 300 KB (WhatsApp drops link previews with a bigger image), `twitter:image` must be the same card, and every file in `assets/og/` must be some page's `og:image`, so a retired card can't ship. Links: every relative target must exist, and so must every `#fragment` — in-page, on a relative page (`../faq/#anonymous`) and on the 404's absolute `https://meetle.org/…#…` links. Outbound links are only requested with `--external` (it needs the network; a moved source URL once shipped as a 404 for this reason).
+
+## Brand rules
+
+Two rules from the owner (2026-09-23). They outrank the boards and the content spec, and `check-site` errors on both.
+
+1. **The tagline is "Talk first, match later."** It leads the brand: the home hero `<h1>` ("Talk first," with *match later.* as the board's italic coral second line), the home `<title>` (*Meetle: talk first, match later*) and its meta / OG / Twitter descriptions, the Organization JSON-LD `slogan`, the footer lockup on every page, `site.webmanifest`, and the share cards (`og-home` leads with it; `og-how-it-works` and `og-safety` carry it in the foot). "Match" is the blind mutual Keep in touch, not the pairing — the home steps say one button *pairs* you with someone. The older board lines (*Keep your face to yourself*, *just talk*) may only ever be supporting copy, never a headline or slogan. Titles: the home is *Meetle: talk first, match later*, and a title that ends in the brand ends in the tagline too — *Privacy Policy | Meetle: talk first, match later*, likewise Terms and the 404. How it works, Safety and the FAQ keep their descriptive spec titles (with the suffix they would run past 60 characters); their share cards carry the tagline instead. Inner pages keep their own H1s and meta descriptions. The checker errors if the home `<title>`, the home `<h1>`, the JSON-LD slogan, any page's footer lockup, the manifest description or the `og-home` source stops carrying the tagline (case-insensitive), or if any title ends in a bare `| Meetle`.
+2. **Never name another service or compare Meetle with one** — no page, comparison table, FAQ answer, source citation, alt text, URL slug, JSON-LD, sitemap entry, meta keyword, OG card or README pitch. Say what Meetle does as plain statements about Meetle. The repo is public, so this covers git too: branch names, commit messages, tags, PR titles and PR bodies (GitHub's default merge message quotes the branch name). The checker errors on the name it guards, in any case, in the content of every file and in every file or folder name under `site/` and `tools/` (skipping `node_modules/` and the git-ignored `out/`), and in this README; its own pattern is written so that a grep for the name finds nothing. `publish-ghpages.sh` applies the same pattern to everything on `gh-pages` after the mirror, and `check-live.mjs` to what meetle.org serves.
 
 ## Editing copy
 
@@ -65,11 +76,10 @@ The copy is implemented **verbatim** from the content spec (`content-spec.md`, v
 
 | Page | File | Spec | Notes |
 | --- | --- | --- | --- |
-| Home | `site/index.html` | **Web-Landing board** (`meetle-app/design/boards/04-web/`); spec §3.1 is retired | hero · three steps · text → voice → video · dark safety band · waitlist band (pre-launch only). Board claims that aren't true were replaced (truth rules below). Drawings are inline SVG lifted from the board sources; JSON-LD WebSite/Organization/WebApplication |
-| How it works | `site/how-it-works/index.html` | §3.2, rewritten for the v1 client | kitchen scene · 7 steps (sign in, start, talk + Leave/Report, games, voice and video on the dark band, Keep in touch, both of you) · the people you kept · what "just talk" means · what Meetle isn't · roadmap · join. Mockups M1–M10 |
+| Home | `site/index.html` | **Web-Landing board** (`meetle-app/design/boards/04-web/`); spec §3.1 is retired | hero (the tagline as H1: "Talk first, *match later.*") · three steps · text → voice → video · dark safety band · waitlist band (pre-launch only). Board claims that aren't true were replaced (truth rules below). Drawings are inline SVG lifted from the board sources; JSON-LD WebSite/Organization/WebApplication |
+| How it works | `site/how-it-works/index.html` | §3.2, rewritten for the v1 client | kitchen scene · 7 steps (sign in, start, talk + Leave/Report, games, voice and video on the dark band, Keep in touch, both of you) · the people you kept · the tagline, explained ("Talk first, match later") · what Meetle isn't · roadmap · join. Mockups M1–M10 |
 | Safety | `site/safety/index.html` | §3.3, rewritten | walking scene · signed in + 18+ · what strangers see (M12) · covered video on the dark band (M7) · Leave and Report (M11, M3R) · nothing saved · six "built in" cards · six things worth remembering · the gaps · join |
-| FAQ | `site/faq/index.html` | §3.4 + §4.1, rewritten | bench scene · 20 Q&As (new: "Are there games?"); FAQPage JSON-LD mirrors the visible answers (the checker enforces it) |
-| Omegle alternative | `site/omegle-alternative/index.html` | §3.5 + §4.2, repositioned from "text-only" to "text first, video covered" | M5O hero · one-tab scene · comparison table · covered video on the dark band · 7 Omegle Q&As, FAQPage JSON-LD |
+| FAQ | `site/faq/index.html` | §3.4 + §4.1, rewritten | bench scene · 21 Q&As (new: "Are there games?", "Who is Meetle for?", "Why does every conversation start in text?"); FAQPage JSON-LD mirrors the visible answers (the checker enforces it) |
 | Privacy / Terms | `site/privacy/`, `site/terms/` | §3.6 / §3.7 | every H2 has a stable `id` for deep links. The 2026-09-23 edits for voice/video and Keep in touch are marked `<!-- EDIT 2026-09-23 (legal review): … -->` in the source |
 | 404 | `site/404.html` | §3.8, rewritten | "This page headed off" + M13; absolute links only, `noindex`, no description/canonical/OG/JSON-LD |
 
@@ -85,11 +95,11 @@ House rules that the checker cannot fully enforce — please keep them:
 
 ### Shared partials (`tools/snippets/`)
 
-`head.html`, `nav.html`, `footer.html`, `waitlist-form.html`, `breadcrumb.html`, `mockups.html`. Every page reproduces nav, footer and the waitlist block **byte-for-byte** apart from the `{{PREFIX}}`, `aria-current="page"` on the current nav link (How it works / Safety — the only two nav links), the nav CTA href (`#waitlist`, or `../#waitlist` on privacy/terms, `https://meetle.org/#waitlist` on 404) and, for a second form on the same page, the `-2` id suffix. If you change a partial, change it in the snippet **and** in all eight pages (a search-and-replace does it), then run the checker.
+`head.html`, `nav.html`, `footer.html`, `waitlist-form.html`, `breadcrumb.html`, `mockups.html`. Every page reproduces nav, footer and the waitlist block **byte-for-byte** apart from the `{{PREFIX}}`, `aria-current="page"` on the current nav link (How it works / Safety — the only two nav links), the nav CTA href (`#waitlist`, or `../#waitlist` on privacy/terms, `https://meetle.org/#waitlist` on 404) and, for a second form on the same page, the `-2` id suffix. If you change a partial, change it in the snippet **and** in all seven pages (a search-and-replace does it), then run the checker.
 
 On the inner pages the closing "join" section wraps the waitlist block in `<div class="js-waitlist-note">` and follows it with a `hidden` `.js-live-note` holding a `.js-primary-cta` — see *Going live*.
 
-The header and footer carry the design system's lockup: mark B (the mark without the mouth, `Logo` board) as inline SVG with `fill="currentColor"` so it follows the night palette, and "meetle**.org**" set live in Nunito 900. The footer adds *just talk*, the page links, *Contact a human* (`mailto:hello@meetle.org`) and "18+".
+The header and footer carry the design system's lockup: mark B (the mark without the mouth, `Logo` board) as inline SVG with `fill="currentColor"` so it follows the night palette, and "meetle**.org**" set live in Nunito 900. The footer adds the tagline *talk first, match later* (sky, Nunito 900, the second half in italic), the page links, *Contact a human* (`mailto:hello@meetle.org`) and "18+".
 
 ## Design tokens (`site/assets/css/site.css` §1)
 
@@ -106,7 +116,7 @@ Values are copied from `meetle-app/design/tokens/tokens.css` (v1.0, 2026-09-23),
 | `--verified` | moss `#2F6B4F` → `#6FC397` | only for things the product actually does (hero proof pills) |
 | `--protect` | mulberry `#6D2A46` → `#E08BAB` | Report, form errors — never coral, never red |
 | `--focus` / `--halo` | sky-700 `#126A92` / `#DFF2FB` → sky-400 / night 700 | 3px focus ring / input focus halo |
-| `--sky` | `#4EC2EF` | *just talk*, the partner; takes ink text, never white |
+| `--sky` | `#4EC2EF` | the footer tagline (*talk first, match later*), the partner; takes ink text, never white |
 | `--n950` … `--n600`, `--n-text`, `--n-muted` | `#151110` … `#4A403C`, `#EFE7E3`, `#A99D98` | the dark safety band (`--ink-900` ground by day, night-950 with night-700 edges at night so it stays the darkest thing on the page; night-900 cards) and the footer (night-950) |
 | `--serif` / `--sans` / `--mono` | Instrument Serif / Nunito / DM Mono | display ≥ 24px only / everything you read or tap / eyebrows and numbers, never sentences |
 | `--r-input` / `--r-tile` / `--r-card` / `--r-art` / `--r-pill` | 14 / 22 / 24 / 30 / 999px | fields / step tiles, band cards / cards / hero art, photo frames / buttons, pills. `--r-tile` 22 is the Web-Landing board's value; tokens.css `radius-tile` is 20 |
@@ -119,11 +129,11 @@ Type scale (board values at 1440): H1 Instrument Serif `clamp(2.75rem, 2.25rem +
 
 **No photos ship.** The Photography board's hard rule is that no face appears in a Meetle asset unless that person was cast, paid and signed, and "if there is no budget yet, ship on drawings alone". The old film photos (faces, several smiling at the camera, rights unknown) were removed from `site/` in the redesign. When cast photography exists, `node tools/build-photos.mjs <dir>` still writes 480/960/1440 WebP + JPEG sets and a `manifest.json` with LQIPs to `site/assets/img/photos/`; the frame component for them has to be designed again (the old `.photo-frame` CSS is gone).
 
-**Scenes and drawings** are inline SVG. Page heroes use the Photography board's shot-list scenes as `.art` (the home's stoop; how-it-works' kitchen, safety's walk home, the FAQ's bench, the Omegle page's one open tab), each with film grain and a DM Mono slug; `.art__slug--ink` is the slug on a light scene. Line drawings from Mkt-Drawings sit in `.draw` tiles (`.draw--dark` for the "one line" drawing) and recolour at night through `.d-ink / .d-acc / .d-wash / .d-clay`.
+**Scenes and drawings** are inline SVG. Page heroes use the Photography board's shot-list scenes as `.art` (the home's stoop; how-it-works' kitchen, safety's walk home, the FAQ's bench), each with film grain and a DM Mono slug; `.art__slug--ink` is the slug on a light scene. Line drawings from Mkt-Drawings sit in `.draw` tiles (`.draw--dark` for the "one line" drawing) and recolour at night through `.d-ink / .d-acc / .d-wash / .d-clay`.
 
 **Favicons / app icons**: `node tools/build-favicons.mjs` regenerates every icon from `assets/brand/mark-coral.svg` (mark B, the recommended mark on the `Logo` board — the same path the app ships).
 
-**OG cards**: product screens are not images — they are HTML/CSS components (below). `node tools/render-mockups.mjs` screenshots `tools/mockups/og-*.html` (1200×630, declared in `<meta name="viewport-size" content="WxH[@scale]">`) to `site/assets/og/` as palette PNGs. All four follow the Mkt-Ads set: `og-home` (the stoop share card), `og-how-it-works` (the same card over the kitchen), `og-safety` (the ink unit: "Nobody sees your face until you say so." beside a covered picture, proof line *Video starts covered · Leave in one tap · 18+*), `og-omegle-alternative` (the clay unit with the two loops: "Meet people the way you remember."). FAQ, Privacy and Terms reuse `og-home.png`.
+**OG cards**: product screens are not images — they are HTML/CSS components (below). `node tools/render-mockups.mjs` screenshots `tools/mockups/og-*.html` (1200×630, declared in `<meta name="viewport-size" content="WxH[@scale]">`) to `site/assets/og/`: a flat card (`og-safety`) as a 256-colour palette PNG (≈50 KB), a card over a grained scene (`og-home`, `og-how-it-works`, which declare `<meta name="og-format" content="jpeg">`) as a 4:4:4 JPEG at q90 (≈60 KB; as palette PNGs they were 340 and 359 KB, because grain defeats PNG compression). Rendering a card deletes its file in the other format. All three follow the Mkt-Ads set: `og-home` (the stoop share card, led by the tagline "Talk first, *match later.*" in 104px display type, then *No profile, no photo, no real name — just a conversation with one stranger, text first…*), `og-how-it-works` (the same card over the kitchen), `og-safety` (the ink unit: "Nobody sees your face until you say so." beside a covered picture, proof line *Video starts covered · Leave in one tap · 18+*); the last two carry *talk first, match later* in the foot. FAQ, Privacy and Terms reuse `og-home.jpg`, so their `og:image:alt` is the home card's.
 
 ## Mockup library (M1–M13)
 
@@ -135,11 +145,11 @@ The v1 client as the `Dev-Anatomy-*` and `Dev-States` boards draw it, in HTML/CS
 | M2 | Choose a username (`riley_m`, *Not your real name.*, **Continue**) | how-it-works |
 | M3 / M3R | Start: *Talk to someone new.*, *I'm 18 or over*, **Start talking** / the same after a report, with *Reported. Thank you for telling us.* | how-it-works / safety |
 | M4 | Finding someone who wants to talk + **Stop looking** | how-it-works |
-| M5 / M5O | Conversation with maya_reads (header with Report + Leave, *Nothing here is saved.*, **Play something**, **Keep in touch**) / the same about Omegle | how-it-works / omegle-alternative |
+| M5 | Conversation with maya_reads (header with Report + Leave, *Nothing here is saved.*, **Play something**, **Keep in touch**) | how-it-works |
 | M6 / M6D | Four in a Row docked above the chat (phone) / in the panel beside it (desktop browser) | how-it-works |
-| M7 | Video, covered for both of you, with **Uncover**; Report and Leave in the top corner, mute and cover at the bottom | how-it-works, safety, omegle-alternative |
+| M7 | Video, covered for both of you, with **Uncover**; Report and Leave in the top corner, mute and cover at the bottom | how-it-works, safety |
 | M8 | Keep in touch is blind: *Keeping in touch* on yours, *Keep in touch* unchanged on theirs — *They're told nothing.* | how-it-works |
-| M9 | *You and maya_reads kept each other — you can talk again any time.* + **In touch** | how-it-works, omegle-alternative |
+| M9 | *You and maya_reads kept each other — you can talk again any time.* + **In touch** | how-it-works |
 | M10 | The people you kept (usernames only) | how-it-works |
 | M11 | Report sheet: *What happened?*, **Just get me out** first, five one-tap reasons | safety |
 | M12 | What strangers see (zoomed header + strike-through list) | safety |
@@ -151,7 +161,7 @@ UI strings are the client's own (`meetle-app/client/src/lib/copy.js`) except the
 
 Every marketing page has the block from `tools/snippets/waitlist-form.html` (`<form class="js-waitlist" method="post" data-endpoint="">`). Every closing join section uses the same pattern: a centred `.section-head--center` (eyebrow, H2, one line in `.js-waitlist-note` and its `.js-live-note` twin), then the form as `.waitlist--center` (label, helper and error centred too), then the `hidden` live CTA. `site.js` handles validation, honeypot, sending, and every message from spec §6. **Until `data-endpoint` is set the form fails honestly** ("The waitlist isn't taking sign-ups right now. Email hello@meetle.org…") — there is no fake success.
 
-The endpoint is configured in exactly one place per form: the `data-endpoint` attribute. There are 6 forms (home, how-it-works, safety, faq, omegle-alternative ×2); set them all at once:
+The endpoint is configured in exactly one place per form: the `data-endpoint` attribute. There are 4 forms (home, how-it-works, safety, faq); set them all at once:
 
 ```bash
 grep -rl 'data-endpoint=""' site | xargs sed -i '' 's#data-endpoint=""#data-endpoint="https://YOUR-ENDPOINT"#'
@@ -232,18 +242,35 @@ Every `.js-primary-cta` (the nav button on every page, the home hero button and 
 4. Home JSON-LD: `WebApplication.url` → the app URL.
 5. Run `node tools/check-site.mjs --external`.
 
-## Staging → launch
+## Publishing
 
-`tools/deploy-prepare.sh` runs in CI before every upload:
+GitHub Pages serves the `gh-pages` branch exactly as it is: nothing on GitHub builds it, and nothing removes a file from it. Copying `site/` over it would add and change files but never delete one, so a page or share card removed from `site/` would stay live and indexable. Always publish with the script, which mirrors with deletion:
 
-1. It requests `https://meetle.org/`. If that returns **200 with `server: github.com`**, the site is live on Pages → **launch mode**: `site/` is uploaded untouched (indexable, canonicals on meetle.org).
-2. Otherwise → **staging mode**: it injects `<meta name="robots" content="noindex">` right after `<head>` on every page and rewrites `404.html`'s absolute links from `https://meetle.org/` to `https://meetle-org.github.io/marketing-site/` (override with `STAGING_BASE`).
+```bash
+node tools/check-site.mjs                                   # 0 errors
+tools/publish-ghpages.sh ../landing-ghpages --dry-run       # read the "Would delete" list
+tools/publish-ghpages.sh ../landing-ghpages --commit        # mirror, verify, commit locally ("Publish <sha>: <subject>")
+git -C ../landing-ghpages push origin HEAD:gh-pages         # the one step that goes live
+node tools/check-live.mjs                                   # a minute later: 0 errors = meetle.org serves exactly site/
+```
 
-The workflow also runs **daily at 05:23 UTC**, so the first run after the DNS cutover flips the site to launch mode by itself; you can also trigger it from Actions → "Deploy site to GitHub Pages" → Run workflow. Delete the `schedule:` block after launch if you like. Never commit `noindex` into `site/` (the checker fails on it) and never run `deploy-prepare.sh` against your working copy — test it on a copy of the repo if you need to.
+What the script does, and refuses:
 
-## DNS cutover (Cloudflare → GitHub Pages)
+1. **Checks first.** `check-site` must print 0 errors. `site/` must have no uncommitted changes, and HEAD must be on `origin/main` (publish what's merged; `--unmerged` is for a hotfix). The target must be a worktree whose branch tracks `origin/gh-pages`, holding `CNAME` and `.nojekyll`, with nothing uncommitted. `--commit` refuses a commit subject that breaks brand rule 2.
+2. **Mirrors with deletion**: `rsync -a --checksum --delete` from `site/`, keeping only `.git`, `CNAME` and `.nojekyll`. Then it proves the target equals `site/` file for file.
+3. **Runs `deploy-prepare.sh` on the copy** (never on `site/`). It requests `https://meetle.org/`. **200 with `server: github.com`** means launch mode, and the copy stays untouched: indexable, canonicals on meetle.org. That is the case today. Anything else means staging mode: it injects `<meta name="robots" content="noindex">` right after `<head>` on every page and points `404.html`'s absolute links at `https://meetle-org.github.io/landing-page/` (override with `STAGING_BASE`). Never commit `noindex` into `site/`; the checker fails on it.
+4. **Applies brand rule 2** to every file name and file content on the target.
+5. **Prints `git status`**. A deleted page or card shows as `D`, so check it. For every page it deleted, it prints a `curl -sI` check. After the push that URL must answer 404. Then remove it in Search Console (Indexing → Removals) and resubmit `sitemap.xml`.
 
-1. **Repo → Settings → Pages**: source "GitHub Actions" (already), **Custom domain** `meetle.org` → Save. GitHub starts a DNS check.
+`check-live.mjs` is read-only. It fetches the live sitemap, every page in it, and every same-site file those pages reference, then errors on any file that differs from `site/`, anything live that `site/` doesn't have, and brand-rule breaks. A removed page that nothing links any more is invisible to it, which is why the script prints the 404 checks.
+
+The alternative is to switch Settings → Pages to "GitHub Actions" and add a workflow that uploads `site/` with `actions/upload-pages-artifact`. Each deploy then replaces the whole site, so a removed file disappears on its own. That is the owner's call. It needs `.github/workflows/pages.yml` in this repo and `deploy-prepare.sh` run in the job.
+
+## DNS cutover (Cloudflare → GitHub Pages) — done
+
+meetle.org serves this repo's Pages (checked 2026-09-23: certificate approved for `meetle.org` and `www.meetle.org`, HTTPS enforced). The steps stay here for reference and for the checks in step 5.
+
+1. **Repo → Settings → Pages**: source "Deploy from a branch", `gh-pages`, `/` (root); **Custom domain** `meetle.org` → Save. GitHub starts a DNS check.
 2. **Org → Settings → Pages → Verified domains**: add `meetle.org` and create the `_github-pages-challenge-meetle-org` TXT record it shows (prevents domain takeover; do this before the A records).
 3. **Cloudflare DNS for meetle.org** — delete every Framer record (the A/CNAME on `@` and `www` pointing at Framer), then add, all **DNS only (grey cloud, not proxied)**:
 
@@ -266,43 +293,42 @@ The workflow also runs **daily at 05:23 UTC**, so the first run after the DNS cu
    dig +short meetle.org A ; dig +short www.meetle.org CNAME
    curl -sI https://meetle.org/ | head -5                          # 200, server: GitHub.com
    curl -sI https://www.meetle.org/ | head -3                      # 301 → https://meetle.org/
-   curl -sI https://meetle-org.github.io/marketing-site/ | head -3 # 301 → https://meetle.org/
+   curl -sI https://meetle-org.github.io/landing-page/ | head -3   # 301 → https://meetle.org/
    curl -sI https://meetle.org/faq | head -3                       # 301 → /faq/
    curl -sI https://meetle.org/nope | head -1                      # 404 (styled page)
    ```
-6. Run the workflow (or wait for the 05:23 UTC run) → launch mode. Confirm with `curl -s https://meetle.org/ | grep -c noindex` → `0`.
-
-If DNS cannot move on launch day, the canonicals must temporarily self-reference the github.io URL (review item 10); otherwise leave everything as is.
+6. Publish (see [Publishing](#publishing)) → launch mode. Confirm with `curl -s https://meetle.org/ | grep -c noindex` → `0`.
 
 ## Search Console (after the site serves from meetle.org)
 
-1. Add a **Domain property** `meetle.org` (DNS TXT verification in Cloudflare). Optionally add a URL-prefix property for `https://meetle-org.github.io/marketing-site/` so you can watch the staging URL drop out.
+1. Add a **Domain property** `meetle.org` (DNS TXT verification in Cloudflare).
 2. **Sitemaps** → submit `https://meetle.org/sitemap.xml` (`robots.txt` already names it).
-3. **URL inspection** → Request indexing for `https://meetle.org/` and `https://meetle.org/omegle-alternative/`.
-4. After a few days check *Pages* (indexing) and *Enhancements → FAQ* for `/faq/` and `/omegle-alternative/`; no rich result is expected for FAQ any more, but the markup must stay valid.
-5. **Bing Webmaster Tools**: import the property from Search Console, and put an IndexNow key file (`<key>.txt`) in `site/` if you want instant pings.
-6. Later: point the GitHub org README at meetle.org with the tagline; AlternativeTo (Omegle) and Product Hunt listings; register the `meetle` handle wherever it is actually used, bio "talk first, match later · meetle.org".
+3. **URL inspection** → Request indexing for `https://meetle.org/`.
+4. **Removals** → for every page a publish deleted (the script prints them), once it answers 404: *Temporarily remove URL*, then resubmit the sitemap. The 404 is what keeps it out for good.
+5. After a few days check *Pages* (indexing) and *Enhancements → FAQ* for `/faq/`; no rich result is expected for FAQ any more, but the markup must stay valid.
+6. **Bing Webmaster Tools**: import the property from Search Console, and put an IndexNow key file (`<key>.txt`) in `site/` if you want instant pings.
+7. Later: point the GitHub org README at meetle.org with the tagline; a Product Hunt listing (lead with the tagline, and no comparisons — brand rule 2); register the `meetle` handle wherever it is actually used, bio "talk first, match later · meetle.org".
 
 ## Founder review list
 
 Everything marked `[REVIEW]` in the content spec (§0.2, §0.4 and inline) was dropped from the HTML and collected here. Items 1–2 of §0.2 that need **code changes in the client/server** are marked ⚙️.
 
-1. **Pricing — "free".** Said in §0.3, FAQ Q3 ("Is Meetle free?"), the Omegle table's *Price* row, and the home JSON-LD (`isAccessibleForFree: true`, `offers.price: "0"`). Confirm no paid tier is planned before launch.
+1. **Pricing — "free".** Said in §0.3, FAQ Q3 ("Is Meetle free?") and the home JSON-LD (`isAccessibleForFree: true`, `offers.price: "0"`). Confirm no paid tier is planned before launch.
 2. **`hello@meetle.org` — launch blocker.** It is the single contact address on every page (mailto links, Organization JSON-LD `email`), the Safety page promises "a person reads it", Privacy routes deletion, waitlist removal and under-18 reports through it, the Terms route appeals through it, and the waitlist's own fallback message tells people to email it. On 2026-09-23 **meetle.org had no MX record** (`dig MX meetle.org` → nothing from 1.1.1.1 and 8.8.8.8; the A records are GitHub Pages, which takes no mail), so mail to it bounces. Before publishing: turn on mail for meetle.org (e.g. Cloudflare Email Routing, which adds the MX and SPF records) forwarding to a monitored inbox, send a test message, and name who reads it.
 3. **Privacy Policy and Terms of Service are drafts** ("Draft — needs legal review before launch" callouts are visible on purpose). Still blank: governing law — Terms §9 literally renders `[jurisdiction]`; legal name and postal address (Privacy "Contact"); the waitlist provider (Privacy "The waitlist" says "the provider we use to hold the list" and "Who we share it with" says "the waitlist provider named above" — name it once chosen); technical-log retention ("a short, fixed period", e.g. 30 days). Also confirm the outbound link to GitHub's general privacy statement.
 4. **Roadmap mentions** ("on the roadmap", no dates, one per page): `/how-it-works/` "What's next" (bans for repeatedly reported accounts, then interest rooms); `/safety/` "Being honest about the gaps" (bans); FAQ "What happens when I report someone?" (bans). Games left the roadmap (they shipped); automatic moderation was removed from it (truth rules: nothing about scanning or AI until it exists).
 5. ⚙️ **Report → account claim** (also needed for the under-18 promise, item 19). `server/src/chat.ts` `handleReport` logs the ephemeral session ids (`reporterId`, `reportedId`) plus `matchId` and `reason`, not the account id. Add `accountId` (one-line change) before the site says reports stick to an account. The site no longer says so: it says there's "a real account behind every username" (true: sign-in is required) and that a report "is recorded" (true: the server logs it). Privacy "Reports" still describes the intended record.
 6. ~~Client string renames~~ — resolved: the v1 client says **Keep in touch / Keeping in touch / In touch** and "It's what the people you talk to see.", and the mockups now show exactly that.
-7. **Omegle "new owner teaser"** — `/omegle-alternative/` FAQ "Is Omegle coming back in 2026?" rests on a single unverified source. The three source links were checked on 2026-09-23 (`--external`): Wikipedia 200; eSafety moved to `…/statement-on-video-chat-service-omegle-shutting-down` (dated 10 Nov 2023; its text matches the "3 moderators for video chat and 1 for text … as many as 40,000 simultaneous users" figures); NPR moved to `…/1211807851/omegle-shut-down-leif-k-brooks`. The old eSafety and NPR URLs are 404s.
+7. Resolved (brand rule 2).
 8. **Instagram `@meetle_`** — if it is ours, add it to `sameAs` in the home JSON-LD and update its bio; if not, ignore.
 9. ~~Portrait strip~~ — resolved: no photos ship any more (see Images).
-10. **Launch sequence and DNS timing** — publish with `noindex` (automatic) → move DNS → `noindex` drops on the next deploy. If DNS cannot move on launch day, canonicals must temporarily self-reference the github.io URL. **Note (2026-09-23): DNS has already moved** — `curl -sI https://meetle.org/` answers 200 with `server: GitHub.com` — so `deploy-prepare.sh` runs in launch mode and whatever is published to Pages is live and indexable at once. Don't publish this branch until items 2, 16 and 19 are done.
+10. **Launch sequence and DNS timing** — overtaken by events. DNS has moved (2026-09-23: `curl -sI https://meetle.org/` answers 200 with `server: GitHub.com`), so `deploy-prepare.sh` runs in launch mode and whatever is on `gh-pages` is live and indexable at once. The redesign is already live: `gh-pages` holds main at 6934fe1. Items 2, 16 and 19 are therefore open against the live site, not gates on the next publish. A publish that only makes the live site more accurate, or removes something from it, shouldn't wait for them.
 11. **Report reasons** — the v1 client sends the HANDOFF §3.8 slugs and M11 shows the sheet. Privacy "Reports" says "the reason if you gave one", which still holds.
 12. **Organization JSON-LD `foundingDate`** is `"2024"` — confirm the year.
 13. **Denials that contain banned words**: "There's nothing to accept" (how-it-works, Keep in touch), 'Not a "who liked you" list' (What Meetle isn't), "There's no accepting or declining" (FAQ "How do I keep in touch…"), "you accept the new terms" (Terms §10). Confirm denials are exempt from the never-write list.
 14. ~~Wording glance~~ — resolved: Safety now says "There's no guest mode" (true) instead of "no throwaway accounts" (you can make throwaway Google accounts), and the throwaway session id is gone (the v1 client doesn't show one).
 15. **Small additions not in the spec**, easy to strip: the FAQ page's "jump to" pill nav (sticky sidebar on desktop); the "Terms of Service →" line under Privacy "Deleting your data"; the "The long version is in the Terms." sentence in Safety "Your part".
-16. **Voice and video are described as shipped** on every page (they're being built; publish only once they are, and only once every condition below is verified in the build — `meetle-app/design/VIDEO-SAFETY.md` recommends all of them). If only one ships, edit: home pill + ladder + band card; how-it-works steps 5 and "What Meetle isn't"; Safety "Nobody sees you first", "Your part" item 3 and the Leave-and-report aside; FAQ "What is Meetle?", "Is Meetle anonymous?", "Does Meetle save my chats?", "Is Meetle safe?", "Does Meetle have video or voice chat?", "Is Meetle like Omegle?", the Google Play answer; the whole Omegle page; Privacy and Terms EDIT blocks; OG cards og-home, og-how-it-works, og-safety, og-omegle-alternative. Details stated as fact that the build must match: both people choose voice and video; video starts covered **for both**; it uncovers only when **both** tap; **either** can cover again instantly; nothing is recorded. M7 is a concept drawing. Conditions the copy depends on, each of which must be verified before publishing:
+16. **Voice and video are described as shipped** on every page (they're being built; publish only once they are, and only once every condition below is verified in the build — `meetle-app/design/VIDEO-SAFETY.md` recommends all of them). If only one ships, edit: home pill + ladder + band card; how-it-works steps 5 and "What Meetle isn't"; Safety "Nobody sees you first", "Your part" item 3 and the Leave-and-report aside; FAQ "What is Meetle?", "Is Meetle anonymous?", "Does Meetle save my chats?", "Is Meetle safe?", "Does Meetle have video or voice chat?", "Who is Meetle for?", "Why does every conversation start in text?", the Google Play answer; Privacy and Terms EDIT blocks; OG cards og-home, og-how-it-works, og-safety. Details stated as fact that the build must match: both people choose voice and video; video starts covered **for both**; it uncovers only when **both** tap; **either** can cover again instantly; nothing is recorded. M7 is a concept drawing. Conditions the copy depends on, each of which must be verified before publishing:
     - **(a) Relay-only calls.** Stranger calls use `iceTransportPolicy: 'relay'` through our own TURN server, so neither device learns the other's IP address. Plain peer-to-peer WebRTC hands each side the other's public IP (an approximate location) — which would make Safety's M12 ("location" struck through), "No trail back" and Privacy "What strangers can see" untrue. If calls won't be relay-only: take "location" out of M12 and its aria-label, qualify "No trail back", and add to Privacy "On a call, the other person's device can see your IP address."
     - **(b) The cover is applied on the sender's device, before encoding** (DEPENDENCIES #10), not only as a blur on the viewer's screen — otherwise "Nobody sees you first", "All either of you sees is a blur" and og-safety's "Nobody sees your face until you say so." fail against a modified client.
     - **(c) No microphone or camera before a choice, no media before both.** The app never calls `getUserMedia` on page load or before the person chooses voice or video, and sends nothing until both have chosen (Privacy: "asks … only when you choose voice or video, never before, and sends nothing until you and the other person have both chosen it"; home: "Until then, nobody hears a thing").

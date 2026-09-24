@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# Runs in CI (see .github/workflows/pages.yml) right before the site is uploaded.
+# tools/publish-ghpages.sh runs this on the gh-pages worktree (SITE_DIR) right after mirroring site/ into it.
+# Never run it on your working copy: without SITE_DIR it edits site/ in place.
 #
 # The source in site/ is always launch-ready (indexable, canonicals on https://meetle.org/).
-# Until meetle.org actually serves this site from GitHub Pages, we are "staging" at
+# While meetle.org doesn't serve this site from GitHub Pages, we are "staging" at
 # https://meetle-org.github.io/landing-page/ and must not get that URL indexed:
 #   - add <meta name="robots" content="noindex"> to every page
 #   - point 404.html's absolute links at the staging URL (404.html is served at any depth, so it can't use relative links)
-# The workflow also runs on a daily schedule, so the first deploy after the DNS cutover flips
-# the site to launch mode automatically. Nothing to remember.
+# meetle.org already serves GitHub Pages (checked 2026-09-23), so today this finds launch mode and changes nothing.
 set -euo pipefail
-SITE="$(cd "$(dirname "$0")/../site" && pwd)"
+SITE="${SITE_DIR:-$(cd "$(dirname "$0")/../site" && pwd)}"
 STAGING_BASE="${STAGING_BASE:-https://meetle-org.github.io/landing-page/}"
 
 # GNU sed (CI) vs BSD sed (macOS) in-place flag
