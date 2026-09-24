@@ -1,6 +1,6 @@
 # Meetle marketing site
 
-The public website for **Meetle** — *talk first, match later* — a random 1-on-1 text chat with strangers where friending is a blind mutual match. Lives at **https://meetle.org** (until DNS moves: https://meetle-org.github.io/marketing-site/).
+The public website for **Meetle** — *just talk* — a random one-on-one conversation with a stranger: text first, voice and video only when both people choose them (video starts covered), and keeping in touch is a blind mutual match. Lives at **https://meetle.org** (until DNS moves: https://meetle-org.github.io/marketing-site/).
 
 - **Static.** Plain HTML + one CSS file + one small JS file. No framework, no build step for HTML, no third-party requests of any kind (fonts, icons and scripts are all self-hosted).
 - **Hosted on GitHub Pages** from this repo (`meetle-org/marketing-site`) via the Actions workflow in `.github/workflows/pages.yml`. The published folder is `site/`.
@@ -19,36 +19,45 @@ site/                       ← the published root (what GitHub Pages serves)
   terms/index.html            /terms/         draft, needs legal review
   404.html                    served at any depth → its links are absolute
   robots.txt · sitemap.xml · site.webmanifest · favicon.* · apple-touch-icon.png · icon-192/512.png
-  assets/css/site.css         the whole design system (≈38 KB, budget 40 KB)
+  assets/css/site.css         the whole design system (≈39 KB, budget 40 KB — the checker enforces it)
   assets/js/site.js           nav toggle + waitlist form + live-app switch (≈5 KB, budget 8 KB)
-  assets/fonts/               Nunito (normal + italic) and Inter, latin subset, woff2
-  assets/brand/               wordmark / tagline / mark SVGs (outlined Gotham Rounded), 68px icon circles
-  assets/img/photos/          responsive film photos (480/960/1440, webp + jpg) + manifest.json
-  assets/img/mockups/         m5-phone.png/.webp — PNG fallback of the hero mockup
-  assets/og/                  1200×630 Open Graph cards
+  assets/fonts/               Nunito (normal + italic, variable), Instrument Serif (normal + italic), DM Mono 400 — latin woff2, all SIL OFL 1.1 (OFL.txt: notices + licence)
+  assets/brand/               mark B (mark-coral / mark-black) — the only brand files; the lockup is live text
+  assets/og/                  1200×630 Open Graph cards (home, how-it-works, safety, omegle-alternative)
 tools/                      ← node scripts (never shipped). `cd tools && npm install` once (sharp).
-  check-site.mjs              static checks: SEO tags, links, images, JSON-LD, sitemap → must print 0 errors
+  check-site.mjs              static checks: SEO tags, links + #fragment targets, images, JSON-LD, sitemap, truth rules → must print 0 errors
   screenshot-pages.mjs        every page at 390 / 820 / 1440 → tools/out/screens/*.png
-  render-mockups.mjs          tools/mockups/*.html → OG cards + mockup PNG/WebP
-  build-photos.mjs            source photos → responsive sets + manifest.json (LQIP)
+  render-mockups.mjs          tools/mockups/og-*.html → OG cards
+  build-photos.mjs            source photos → responsive sets + manifest.json (LQIP) — unused today, see Images
   build-favicons.mjs          brand mark → favicon.svg/.ico/.png, apple-touch-icon, icon-192/512
   deploy-prepare.sh           staging/launch switch, run by CI right before upload
   snippets/                   the shared partials every page is built from (see below)
-  mockups/                    standalone wrappers for the OG cards and the m5 fallback PNG
+  mockups/                    standalone wrappers for the four OG cards (+ _og.css)
 .github/workflows/pages.yml ← deploy on push to main, on demand, and daily at 05:23 UTC
 ```
 
 ## Everyday commands
 
 ```bash
-node tools/check-site.mjs          # 0 errors required before a commit; 3 warnings are expected (see below)
+node tools/check-site.mjs          # 0 errors required before a commit; 0 warnings today (see below)
+node tools/check-site.mjs --external   # also requests every outbound link (sources, GitHub); failures are warnings
 node tools/screenshot-pages.mjs    # then look at tools/out/screens/<page>-{phone,tablet,desktop}.png
 node tools/screenshot-pages.mjs faq --slice   # one page only, plus 1600px-tall slices for easier reading
-node tools/render-mockups.mjs      # regenerate site/assets/og/*.png and site/assets/img/mockups/*
-node tools/build-photos.mjs tools/source-photos   # regenerate the responsive photos + manifest
+node tools/screenshot-pages.mjs home --night  # the night palette (the site follows prefers-color-scheme); light is forced otherwise
+node tools/render-mockups.mjs      # regenerate site/assets/og/*.png (or: node tools/render-mockups.mjs og-safety)
 ```
 
-`check-site` warns on the phrases *video chat / voice chat / friend request* wherever they appear. The three current warnings are the spec's own **denials** ("Not a video chat", "you want video or voice chat. There isn't any.", the eSafety quote and the unrelated "Meetle: Video Chat & Meet" Google Play app) — verify the context is still a denial and move on.
+`check-site` enforces the **truth rules** (`meetle-app/design/DEPENDENCIES.md`) on everything a reader gets — visible text, alt / aria-label / meta content and JSON-LD on every page, plus the OG card sources (`tools/mockups/og-*.html`) and `site.webmanifest`; never class names or scripts:
+
+- **Error** on the design boards' own claims, verbatim: *Women-only matching*, *Everyone is ID checked*, *Keep her*, *Reports get answered*, *An ID check happens once*, *moderators in the room*. They can't ship even as a denial.
+- **Warning** (read the context — a denial is fine, a promise is not) on: gendered matching (*she / her / woman*: matching has no gender), ID or age verification (18+ is a stated rule, never "verified"), *confirm(ed)* within a sentence of *18* or *age* (the 18+ box is self-declared: write "you tick", "you say", never "confirmed"), report receipts, blocking / "never matched again" (no Block exists), moderation, scanning or AI (not built), request wording (*friend request*), and **obsolete denials** — *text only, no camera, no video, no voice, not a video chat* — which stopped being true when opt-in voice and video shipped.
+
+Every page produces none today, so any new warning is worth reading. Two escape hatches, both deliberate:
+
+- `data-truth-ok="<reason>"` on an element skips it for the **warnings only** (never the errors) — used once, on `/omegle-alternative/`, for Omegle's own sourced history ("three moderators for video chat…"). It must not contain a nested element with the same tag name.
+- FAQPage questions in JSON-LD aren't scanned twice: the checker first proves every JSON-LD question and answer equals a visible `<div class="faq-item"><h3>…</h3><p>…</p></div>` (tags stripped, entities decoded) and vice versa, and errors if they drift. Keep each FAQ item to one `<h3>` and one `<p>`.
+
+It also errors when a page is over 60 KB, `site.css` over 40 KB or `site.js` over 8 KB, and prints both sizes on the summary line. Links: every relative target must exist, and so must every `#fragment` — in-page, on a relative page (`../faq/#anonymous`) and on the 404's absolute `https://meetle.org/…#…` links. Outbound links are only requested with `--external` (it needs the network; the old NPR source link was a 404 for this reason).
 
 ## Editing copy
 
@@ -56,19 +65,19 @@ The copy is implemented **verbatim** from the content spec (`content-spec.md`, v
 
 | Page | File | Spec | Notes |
 | --- | --- | --- | --- |
-| Home | `site/index.html` | §3.1 H0–H9 | H1 is the wordmark + tagline SVGs; JSON-LD WebSite/Organization/WebApplication |
-| How it works | `site/how-it-works/index.html` | §3.2 W0–W10 | mockups M1–M8 |
-| Safety | `site/safety/index.html` | §3.3 S0–S9 | M9, M10 |
-| FAQ | `site/faq/index.html` | §3.4 + §4.1 | 19 Q&As, FAQPage JSON-LD must mirror the visible answers |
-| Omegle alternative | `site/omegle-alternative/index.html` | §3.5 + §4.2 | 7 Omegle Q&As, FAQPage JSON-LD |
-| Privacy / Terms | `site/privacy/`, `site/terms/` | §3.6 / §3.7 | every H2 has a stable `id` for deep links |
-| 404 | `site/404.html` | §3.8 | absolute links only, `noindex`, no description/canonical/OG/JSON-LD |
+| Home | `site/index.html` | **Web-Landing board** (`meetle-app/design/boards/04-web/`); spec §3.1 is retired | hero · three steps · text → voice → video · dark safety band · waitlist band (pre-launch only). Board claims that aren't true were replaced (truth rules below). Drawings are inline SVG lifted from the board sources; JSON-LD WebSite/Organization/WebApplication |
+| How it works | `site/how-it-works/index.html` | §3.2, rewritten for the v1 client | kitchen scene · 7 steps (sign in, start, talk + Leave/Report, games, voice and video on the dark band, Keep in touch, both of you) · the people you kept · what "just talk" means · what Meetle isn't · roadmap · join. Mockups M1–M10 |
+| Safety | `site/safety/index.html` | §3.3, rewritten | walking scene · signed in + 18+ · what strangers see (M12) · covered video on the dark band (M7) · Leave and Report (M11, M3R) · nothing saved · six "built in" cards · six things worth remembering · the gaps · join |
+| FAQ | `site/faq/index.html` | §3.4 + §4.1, rewritten | bench scene · 20 Q&As (new: "Are there games?"); FAQPage JSON-LD mirrors the visible answers (the checker enforces it) |
+| Omegle alternative | `site/omegle-alternative/index.html` | §3.5 + §4.2, repositioned from "text-only" to "text first, video covered" | M5O hero · one-tab scene · comparison table · covered video on the dark band · 7 Omegle Q&As, FAQPage JSON-LD |
+| Privacy / Terms | `site/privacy/`, `site/terms/` | §3.6 / §3.7 | every H2 has a stable `id` for deep links. The 2026-09-23 edits for voice/video and Keep in touch are marked `<!-- EDIT 2026-09-23 (legal review): … -->` in the source |
+| 404 | `site/404.html` | §3.8, rewritten | "This page headed off" + M13; absolute links only, `noindex`, no description/canonical/OG/JSON-LD |
 
 House rules that the checker cannot fully enforce — please keep them:
 
-- **Product truth first.** Text chat only. Never promise video, voice, calls, ID verification, AI/24-7 moderation, bans, lobbies or games as features. Roadmap items are "on the roadmap", at most once per page, no dates.
-- **Never write "friend request"**, "accept", "decline", "pending", "who liked you", "verified", "coming soon" in a friending context. Friending is *Add friend → blind → mutual match*. (The spec contains a few of these words inside denials — "There's nothing to accept", "Not a 'who liked you' list" — flagged for the editor in the review list below.)
-- Product buttons are named exactly as the app names them: **Start Chat, Next, Stop, Report, Add friend, Added, Friends, Remove friend, Send, Save, Continue with Google / Discord / GitHub**. "Meetle Magic", "Vibe", "Peace out" live only in prose.
+- **Product truth first** (`meetle-app/design/DEPENDENCIES.md` — until a thing is built, its copy comes out). True: one person at a time; no profile, photo or real name (username only); nothing in a stranger conversation is saved; Leave is one tap in the same corner, no confirmation, no reason; *Keep in touch* is blind and mutual; question cards and small games (Four in a Row, In Sync, One Word Story, tic-tac-toe) sit beside the chat; a report ends the conversation and looks like a plain leave to the other person; 18+ is a stated rule; free, in the browser, installable. Voice and video are opt-in escalations from text — both people choose them, video starts covered for both and uncovers only when both tap, either can cover again instantly. Never: women-only / gendered matching, ID or age verification, report receipts, Block, moderators in the room, video scanning or AI moderation. Voice: a friend who has done this before; no exclamation marks near leaving, reporting or safety. Roadmap items are "on the roadmap", at most once per page, no dates.
+- **Never write "friend request"**, "accept", "decline", "pending", "who liked you", "verified", "coming soon" in a friending context. Keeping in touch is *Keep in touch → blind → mutual match*. (The spec contains a few of these words inside denials — "There's nothing to accept", "Not a 'who liked you' list" — flagged for the editor in the review list below.)
+- Product buttons are named exactly as the app names them (`meetle-app/client/src/lib/copy.js`): **Start talking, Keep in touch, Leave, Report, Talk to someone new, Play something, Continue with Google / Discord / GitHub, Continue**. The mockups show the v1 client (see Mockup library).
 - One `<h1>` per page, headings in order, italic word in a headline is `<em>`, `*word*` in the spec = `<em>word</em>`.
 - **Paths are relative** (`./` on the home page, `../` on sub-pages). Only `404.html` uses absolute `https://meetle.org/…` URLs. Canonical, OG and sitemap URLs are absolute with trailing slashes.
 - `<head>` must start with the literal string `<head>` (no attributes) — `deploy-prepare.sh` injects after it.
@@ -76,66 +85,73 @@ House rules that the checker cannot fully enforce — please keep them:
 
 ### Shared partials (`tools/snippets/`)
 
-`head.html`, `nav.html`, `footer.html`, `waitlist-form.html`, `breadcrumb.html`, `mockups.html`, `photo.html`. Every page reproduces nav, footer and the waitlist block **byte-for-byte** apart from the `{{PREFIX}}`, `aria-current="page"` on the current nav link, the nav CTA href (`#waitlist`, or `../#waitlist` on privacy/terms, `https://meetle.org/#waitlist` on 404) and, for a second form on the same page, the `-2` id suffix. If you change a partial, change it in the snippet **and** in all eight pages (a search-and-replace does it), then run the checker.
+`head.html`, `nav.html`, `footer.html`, `waitlist-form.html`, `breadcrumb.html`, `mockups.html`. Every page reproduces nav, footer and the waitlist block **byte-for-byte** apart from the `{{PREFIX}}`, `aria-current="page"` on the current nav link (How it works / Safety — the only two nav links), the nav CTA href (`#waitlist`, or `../#waitlist` on privacy/terms, `https://meetle.org/#waitlist` on 404) and, for a second form on the same page, the `-2` id suffix. If you change a partial, change it in the snippet **and** in all eight pages (a search-and-replace does it), then run the checker.
+
+On the inner pages the closing "join" section wraps the waitlist block in `<div class="js-waitlist-note">` and follows it with a `hidden` `.js-live-note` holding a `.js-primary-cta` — see *Going live*.
+
+The header and footer carry the design system's lockup: mark B (the mark without the mouth, `Logo` board) as inline SVG with `fill="currentColor"` so it follows the night palette, and "meetle**.org**" set live in Nunito 900. The footer adds *just talk*, the page links, *Contact a human* (`mailto:hello@meetle.org`) and "18+".
 
 ## Design tokens (`site/assets/css/site.css` §1)
 
-| Token | Value | Use |
-| --- | --- | --- |
-| `--coral` | `#E8513D` | primary: headlines ≥ 24px, filled buttons, your chat bubbles |
-| `--coral-dark` | `#D6462F` | button hover |
-| `--coral-deep` | `#CF3F2A` | small filled elements with white text at 14px (`.key`) — 4.5:1 |
-| `--salmon` | `#EF8269` | rare accent |
-| `--sky` / `--sky-ink` | `#4EC2EF` / `#1B87B8` | secondary (Add friend pill, focus ring) / its AA text colour |
-| `--bg` | `#F5EFEC` | page background (warm off-white) |
-| `--beige` | `#E8D8D0` | offset photo/device frames, callouts |
-| `--neutral` | `#EEEEEE` | their chat bubbles, DM rail |
-| `--ink` / `--body` / `--muted` | `#262427` / `#3B3B3B` / `#515151` | headlines / body text / eyebrows, captions |
-| `--rule` | `#D8D8D8` | hairlines |
-| `--green` / `--red` | `#2E9E5B` / `#C8321C` | Friends pill / Report, errors |
-| `--font-head` | Nunito 400–1000 (variable, + italic) | headlines, UI, buttons |
-| `--font-body` | Inter 400–700 (variable) | body copy, chat messages |
-| `--r-sm` / `--r-md` / `--r-lg` / `--r-pill` | 12 / 24 / 32 / 999px | inputs / cards & photos / frames / buttons |
-| `--container` / `--gutter` | 1120px / 20px (32px ≥ 600px) | layout |
-| `--space` | `clamp(36px, 4.6vw, 68px)` | half the gap between sections |
+Values are copied from `meetle-app/design/tokens/tokens.css` (v1.0, 2026-09-23), except where the Web-Landing board measures differently (noted below) — the site can't import across repos, so re-copy when the tokens change. Palette tokens are fixed; **semantic** tokens flip at night (`prefers-color-scheme: dark`, the tokens' night set). Product mockups (`.device`) and OG cards (`.og`) redeclare the light semantic set, so pictures of the app stay light on a night page.
 
-Type scale: H1 `clamp(2.5rem, 5.5vw, 4rem)`, H2 `clamp(2rem, 4.2vw, 3.25rem)` Nunito 800, line-height 1.05; body Inter 1.0625rem / 1.6. Breakpoints: 600 (gutter, form label), 700 (`.grid--2`, `.kv`), 720 (`.show-wide`/`.show-narrow`), 880 (desktop nav, `.grid--3`, steps), 900 (`.split`, hero grid, FAQ sidebar). No dark mode (`color-scheme: light`); `prefers-reduced-motion` is respected. Brand type is Gotham Rounded, which we cannot ship: the wordmark and tagline are pre-rendered SVG outlines in `assets/brand/`, everything else is Nunito.
+| Token | Light → night | Use |
+| --- | --- | --- |
+| `--bg` / `--raised` / `--surface` | linen `#F5EFEC` / paper `#FBF8F6` / `#FFF` → night 900 / 800 / 800 | page ground / bands, tiles, text fields (paper, as on the Components board) / cards, pills |
+| `--ink` / `--body` / `--muted` | `#22201F` / `#3E3936` / `#6B615C` → `#EFE7E3` / `#EFE7E3` / `#A99D98` | headlines / body / captions (ink-500 is the lightest grey allowed for text) |
+| `--rule` / `--rule-2` | clay `#E8D8D0` / `#D9C6BC` → night 700 / 600 | hairlines / input borders |
+| `--brand` | coral-500 `#E8513D` → `#F2705C` | the mark and wordmark only — never under small text |
+| `--accent` | coral-700 `#B0321F` → `#F2705C` | coral as text: links, eyebrows, the italic word in a headline |
+| `--coral-600` / `-700` / `-900` | `#D23A26` / `#B0321F` / `#8C2418` | primary button fill (white text 4.8:1) / hover / pressed |
+| `--verified` | moss `#2F6B4F` → `#6FC397` | only for things the product actually does (hero proof pills) |
+| `--protect` | mulberry `#6D2A46` → `#E08BAB` | Report, form errors — never coral, never red |
+| `--focus` / `--halo` | sky-700 `#126A92` / `#DFF2FB` → sky-400 / night 700 | 3px focus ring / input focus halo |
+| `--sky` | `#4EC2EF` | *just talk*, the partner; takes ink text, never white |
+| `--n950` … `--n600`, `--n-text`, `--n-muted` | `#151110` … `#4A403C`, `#EFE7E3`, `#A99D98` | the dark safety band (`--ink-900` ground by day, night-950 with night-700 edges at night so it stays the darkest thing on the page; night-900 cards) and the footer (night-950) |
+| `--serif` / `--sans` / `--mono` | Instrument Serif / Nunito / DM Mono | display ≥ 24px only / everything you read or tap / eyebrows and numbers, never sentences |
+| `--r-input` / `--r-tile` / `--r-card` / `--r-art` / `--r-pill` | 14 / 22 / 24 / 30 / 999px | fields / step tiles, band cards / cards / hero art, photo frames / buttons, pills. `--r-tile` 22 is the Web-Landing board's value; tokens.css `radius-tile` is 20 |
+| `--container` / `--gutter` | 1328px / 16 → 32 (≥ 600) → 56px (≥ 1200) | layout (the board's 56px margins at 1440) |
+| `--space` | `clamp(40px, 4.5vw, 56px)` | section padding |
+
+Type scale (board values at 1440): H1 Instrument Serif `clamp(2.75rem, 2.25rem + 3.62vw, 5.5rem)` (88px) / 0.95, −0.02em; H2 up to 44px / 1.02 (−0.01em, except the home's steps and band headings, which the board sets at 0); H3 Nunito 800 22px (line-height normal in the home steps and band cards, as on the board); body Nunito 17px / 1.55; eyebrows DM Mono 11px uppercase, 0.16em tracking, `--accent`. Breakpoints: 600 (gutter, form label, band cards 2-up), 720 (desktop nav, `.show-wide`, steps as rows), 1024 (hero and band side by side, steps 3-up, ladder art beside the list — the tokens' desktop; the hero art keeps a 1.15 ratio up to 470px tall, so it is the board's 612×470 at 1440 and never crops the moon on narrower desktops), 1200 (56px gutter); inner-page parts keep 600 (`.grid--3` 2-up, one phone per `.stage` below it) / 700 / 760 (Keep in touch pair side by side, both phones stretched to the same height) / 880 / 900 (`.split` two columns; from 900 to 1329px a `.stage` shows one phone again, because two only fit side by side in a half-width column from 1330). Below 720px, `.section-head--prose` keeps a centred head's eyebrow and heading centred but left-aligns its paragraphs. `prefers-reduced-motion` is respected. The old Gotham Rounded wordmark, tagline and icon SVGs were removed; the lockup is live text everywhere, including the mockups.
 
 ## Images
 
-**Photos** (`site/assets/img/photos/`). Masters are the images inside `Meetle.sketch` (a `.sketch` file is a zip: `unzip Meetle.sketch 'images/*'`), renamed to the names in `manifest.json` and dropped in the git-ignored `tools/source-photos/`. `node tools/build-photos.mjs` writes 480/960/1440-wide WebP + progressive JPEG for each, plus `manifest.json` with the exact rendered sizes and a 24px blurred LQIP data URI. Pages use `<picture>` with the WebP `srcset`, JPEG fallback, `sizes`, `width`/`height` from the manifest's 1440 entry, `loading="lazy"` on everything except the first visual (`fetchpriority="high"` there), `decoding="async"`, and the LQIP as an inline `background-image`. Copy the pattern from `tools/snippets/photo.html`; alt text is in spec §7.2.
+**No photos ship.** The Photography board's hard rule is that no face appears in a Meetle asset unless that person was cast, paid and signed, and "if there is no budget yet, ship on drawings alone". The old film photos (faces, several smiling at the camera, rights unknown) were removed from `site/` in the redesign. When cast photography exists, `node tools/build-photos.mjs <dir>` still writes 480/960/1440 WebP + JPEG sets and a `manifest.json` with LQIPs to `site/assets/img/photos/`; the frame component for them has to be designed again (the old `.photo-frame` CSS is gone).
 
-Two portraits are **deliberately excluded** and must never be referenced: `portrait-guy-smile` contains a picture-in-picture inset of a second face (it reads as a video call, which Meetle does not have) and `portrait-woman-redhair` has a small inset in its top-right corner (usable only if cropped — founder's call). `portrait-woman-side` is in the manifest but unused (reserve).
+**Scenes and drawings** are inline SVG. Page heroes use the Photography board's shot-list scenes as `.art` (the home's stoop; how-it-works' kitchen, safety's walk home, the FAQ's bench, the Omegle page's one open tab), each with film grain and a DM Mono slug; `.art__slug--ink` is the slug on a light scene. Line drawings from Mkt-Drawings sit in `.draw` tiles (`.draw--dark` for the "one line" drawing) and recolour at night through `.d-ink / .d-acc / .d-wash / .d-clay`.
 
-**Favicons / app icons**: `node tools/build-favicons.mjs` regenerates every icon from `assets/brand/mark-coral.svg`.
+**Favicons / app icons**: `node tools/build-favicons.mjs` regenerates every icon from `assets/brand/mark-coral.svg` (mark B, the recommended mark on the `Logo` board — the same path the app ships).
 
-**Mockups and OG cards**: product screens are not images — they are HTML/CSS components (below). `node tools/render-mockups.mjs` screenshots `tools/mockups/og-*.html` (1200×630) to `site/assets/og/` and `tools/mockups/m5-phone.html` (390×844 @2×) to `site/assets/img/mockups/`. Each wrapper declares its size in `<meta name="viewport-size" content="WxH[@scale]">`. FAQ, Privacy and Terms reuse `og-home.png`.
+**OG cards**: product screens are not images — they are HTML/CSS components (below). `node tools/render-mockups.mjs` screenshots `tools/mockups/og-*.html` (1200×630, declared in `<meta name="viewport-size" content="WxH[@scale]">`) to `site/assets/og/` as palette PNGs. All four follow the Mkt-Ads set: `og-home` (the stoop share card), `og-how-it-works` (the same card over the kitchen), `og-safety` (the ink unit: "Nobody sees your face until you say so." beside a covered picture, proof line *Video starts covered · Leave in one tap · 18+*), `og-omegle-alternative` (the clay unit with the two loops: "Meet people the way you remember."). FAQ, Privacy and Terms reuse `og-home.png`.
 
-## Mockup library (M1–M11)
+## Mockup library (M1–M13)
 
-Canonical markup lives in `tools/snippets/mockups.html`; pages paste it verbatim and change only the asset prefix (plus layout classes such as `mock--center` on the `<figure>`). Every wrapper is `<figure class="mock …" role="img" aria-label="…">` (labels in spec §7.3) with `aria-hidden="true"` inside. Frames: `.device--phone` (bezel `--ink`, 44px radius, 356:800 screen; 300px on phones, up to 390px on desktop), `.device--browser` (1100×640 window with three dots), `.device--crop` (phone cut off at the bottom). The beige offset frame comes from `.device::before`.
+The v1 client as the `Dev-Anatomy-*` and `Dev-States` boards draw it, in HTML/CSS (`site.css` §13, ≈ 9 KB). Canonical markup lives in `tools/snippets/mockups.html`, generated from the same source as the pages; paste a block verbatim and change only `{{PREFIX}}`. Every wrapper is `<figure class="mock …" role="img" aria-label="…">` with everything inside `aria-hidden`. Sizes are in `em` off `.ui`, which follows the frame width (container units), so one markup works from 240 to 1100px. Frames: `.device--phone` (ink bezel, 390:844 screen), `.device--base` (a phone cut off at the top), `.device--browser` (16:9 window), `.device--zoom` (a bare card). Phones in a column sit in `.stage` (a rounded paper tile; below 600px, and from 900 to 1329px, only its first phone shows). Mockups keep the light palette at night.
 
 | Id | Screen | Used on |
 | --- | --- | --- |
-| M1 | Sign in to continue (Google / Discord / GitHub) | how-it-works |
-| M2 | Choose a username (`riley_m`, rule text, **Save**) | home, how-it-works |
-| M3 | Start screen: 18+ tick + **Start Chat** | how-it-works |
-| M4 | Looking for someone… + **Stop** | home, how-it-works, safety (in M9) |
-| M5 / M5D | Stranger chat with QuietStorm (`user_a83f91`), phone / desktop | home hero, omegle, how-it-works, OG cards |
-| M6 | "You and QuietStorm matched as friends!" | home, how-it-works, omegle |
-| M7 | Two phones: **Added** vs untouched **Add friend** — *They're told nothing.* | home, how-it-works |
-| M8 / M8P | Direct Messages, desktop rail / phone list | home, how-it-works |
-| M9 | Report confirm → Looking for someone… | safety |
-| M10 | What strangers see (zoomed partner row + strike-through list) | safety |
-| M11 | "QuietStorm disconnected…" + **Next** | 404 |
+| M1 | Sign in to keep the people you meet (Google / Discord / GitHub) | how-it-works |
+| M2 | Choose a username (`riley_m`, *Not your real name.*, **Continue**) | how-it-works |
+| M3 / M3R | Start: *Talk to someone new.*, *I'm 18 or over*, **Start talking** / the same after a report, with *Reported. Thank you for telling us.* | how-it-works / safety |
+| M4 | Finding someone who wants to talk + **Stop looking** | how-it-works |
+| M5 / M5O | Conversation with maya_reads (header with Report + Leave, *Nothing here is saved.*, **Play something**, **Keep in touch**) / the same about Omegle | how-it-works / omegle-alternative |
+| M6 / M6D | Four in a Row docked above the chat (phone) / in the panel beside it (desktop browser) | how-it-works |
+| M7 | Video, covered for both of you, with **Uncover**; Report and Leave in the top corner, mute and cover at the bottom | how-it-works, safety, omegle-alternative |
+| M8 | Keep in touch is blind: *Keeping in touch* on yours, *Keep in touch* unchanged on theirs — *They're told nothing.* | how-it-works |
+| M9 | *You and maya_reads kept each other — you can talk again any time.* + **In touch** | how-it-works, omegle-alternative |
+| M10 | The people you kept (usernames only) | how-it-works |
+| M11 | Report sheet: *What happened?*, **Just get me out** first, five one-tap reasons | safety |
+| M12 | What strangers see (zoomed header + strike-through list) | safety |
+| M13 | *this_page headed off.* + **Talk to someone new** / Back to start | 404 |
 
-All UI strings inside mockups are the real client strings (spec §6). "Added" is a marketing rendering until the client is renamed (review item 6).
+UI strings are the client's own (`meetle-app/client/src/lib/copy.js`) except the chat lines, the usernames, the M8 captions, the M12 callouts and **all of M7**: the client has no video screen yet, so M7 follows the `V1-Video` concept board with marketing copy — replace it when the real screen ships. One deliberate difference: the board puts Leave in the bottom controls, M7 keeps Report and Leave in the top corner, because four lines on the site promise Leave is "always in the same corner" (home band, how-it-works step 3, Safety twice). The video build has to keep it there (review item 16), or that copy changes. Never draw Block, an ID check, women-only matching or a report receipt.
 
 ## Waitlist form
 
-Every marketing page has the block from `tools/snippets/waitlist-form.html` (`<form class="js-waitlist" method="post" data-endpoint="">`). `site.js` handles validation, honeypot, sending, and every message from spec §6. **Until `data-endpoint` is set the form fails honestly** ("The waitlist isn't taking sign-ups right now. Email hello@meetle.org…") — there is no fake success.
+Every marketing page has the block from `tools/snippets/waitlist-form.html` (`<form class="js-waitlist" method="post" data-endpoint="">`). Every closing join section uses the same pattern: a centred `.section-head--center` (eyebrow, H2, one line in `.js-waitlist-note` and its `.js-live-note` twin), then the form as `.waitlist--center` (label, helper and error centred too), then the `hidden` live CTA. `site.js` handles validation, honeypot, sending, and every message from spec §6. **Until `data-endpoint` is set the form fails honestly** ("The waitlist isn't taking sign-ups right now. Email hello@meetle.org…") — there is no fake success.
 
-The endpoint is configured in exactly one place per form: the `data-endpoint` attribute. There are 7 forms (home ×2, how-it-works, safety, faq, omegle-alternative ×2); set them all at once:
+The endpoint is configured in exactly one place per form: the `data-endpoint` attribute. There are 6 forms (home, how-it-works, safety, faq, omegle-alternative ×2); set them all at once:
 
 ```bash
 grep -rl 'data-endpoint=""' site | xargs sed -i '' 's#data-endpoint=""#data-endpoint="https://YOUR-ENDPOINT"#'
@@ -208,7 +224,13 @@ When the app is public, set the constant at the top of `site/assets/js/site.js`:
 const LIVE_APP_URL = 'https://app.meetle.org/';
 ```
 
-Every `.js-primary-cta` (the nav button on all pages) becomes **Start talking** linking there, and the hero's `.js-waitlist-note` ("We're not open yet…") is hidden. The waitlist forms stay as they are; remove or repoint them when the queue is no longer needed.
+Every `.js-primary-cta` (the nav button on every page, the home hero button and each inner page's live CTA) becomes **Start talking** linking there — the board's button — and every `.js-waitlist-note` is hidden: on the home page that is the whole "Not open yet" waitlist band, so the page ends on the safety band and footer exactly like the board. Until then the same buttons read **Join the waitlist** and jump to `#waitlist`. The inner pages work the same way: each waitlist block sits in a `.js-waitlist-note` and is followed by a `hidden` `.js-live-note` (a line of copy and a **Start talking** `.js-primary-cta`), which `site.js` un-hides; the 404's "Join the waitlist" pill hides too. The switch is JavaScript only, so crawlers and no-JS visitors keep the waitlist version until the HTML changes too. **Launch checklist** (one commit, after the constant is set and tested):
+
+1. FAQ "Is Meetle free?" (*Joining the waitlist is free too*) and "When can I use Meetle?" (*Not quite yet…*): rewrite both, drop their `#join` links, and edit the FAQPage JSON-LD twins in the same edit (the checker fails if they drift). Until then those links point at `#join`, which stays visible in both states.
+2. Privacy "The waitlist" and "How long we keep it", Terms §6: rewrite or remove.
+3. In the HTML itself: every `.js-primary-cta` → *Start talking* + the app URL; delete the `.js-waitlist-note` blocks (the home's whole "Not open yet" band) and un-hide the `.js-live-note` ones; the 404's waitlist pill goes.
+4. Home JSON-LD: `WebApplication.url` → the app URL.
+5. Run `node tools/check-site.mjs --external`.
 
 ## Staging → launch
 
@@ -266,21 +288,34 @@ If DNS cannot move on launch day, the canonicals must temporarily self-reference
 Everything marked `[REVIEW]` in the content spec (§0.2, §0.4 and inline) was dropped from the HTML and collected here. Items 1–2 of §0.2 that need **code changes in the client/server** are marked ⚙️.
 
 1. **Pricing — "free".** Said in §0.3, FAQ Q3 ("Is Meetle free?"), the Omegle table's *Price* row, and the home JSON-LD (`isAccessibleForFree: true`, `offers.price: "0"`). Confirm no paid tier is planned before launch.
-2. **`hello@meetle.org`** is the single contact address on every page (mailto links, Organization JSON-LD `email`). Confirm the mailbox exists.
+2. **`hello@meetle.org` — launch blocker.** It is the single contact address on every page (mailto links, Organization JSON-LD `email`), the Safety page promises "a person reads it", Privacy routes deletion, waitlist removal and under-18 reports through it, the Terms route appeals through it, and the waitlist's own fallback message tells people to email it. On 2026-09-23 **meetle.org had no MX record** (`dig MX meetle.org` → nothing from 1.1.1.1 and 8.8.8.8; the A records are GitHub Pages, which takes no mail), so mail to it bounces. Before publishing: turn on mail for meetle.org (e.g. Cloudflare Email Routing, which adds the MX and SPF records) forwarding to a monitored inbox, send a test message, and name who reads it.
 3. **Privacy Policy and Terms of Service are drafts** ("Draft — needs legal review before launch" callouts are visible on purpose). Still blank: governing law — Terms §9 literally renders `[jurisdiction]`; legal name and postal address (Privacy "Contact"); the waitlist provider (Privacy "The waitlist" says "the provider we use to hold the list" and "Who we share it with" says "the waitlist provider named above" — name it once chosen); technical-log retention ("a short, fixed period", e.g. 30 days). Also confirm the outbound link to GitHub's general privacy statement.
-4. **Roadmap mentions** ("on the roadmap", no dates): `/how-it-works/` "What's next" (W9); `/safety/` "One tap ends it" (S4) **and** "Being honest about the gaps" (S8) — two on one page although the rule says at most one; FAQ Q13. Editor's call.
-5. ⚙️ **Report → account claim.** `server/src/chat.ts` `handleReport` logs the ephemeral session ids (`reporterId`, `reportedId`) plus `matchId` and `reason`, not the account id. Add `accountId` (one-line change) before the site says more than "a report has somewhere to stick". Privacy "Reports" currently describes the intended record.
-6. ⚙️ **Client string renames** (one line each): the Add friend button state "Request sent" and the status line "Friend … sent to X." must become **Added** (CONTRACT §4 forbids request wording; the site's mockups already show "Added"); the username hint "can't be seen by the strangers you chat with" is wrong — strangers *do* see the username — the site uses "This is what strangers will see."
-7. **Omegle "new owner teaser"** — `/omegle-alternative/` FAQ "Is Omegle coming back in 2026?" rests on a single unverified source; also the eSafety moderator figures in "Why Omegle shut down" and the three source links (Wikipedia, eSafety, NPR).
+4. **Roadmap mentions** ("on the roadmap", no dates, one per page): `/how-it-works/` "What's next" (bans for repeatedly reported accounts, then interest rooms); `/safety/` "Being honest about the gaps" (bans); FAQ "What happens when I report someone?" (bans). Games left the roadmap (they shipped); automatic moderation was removed from it (truth rules: nothing about scanning or AI until it exists).
+5. ⚙️ **Report → account claim** (also needed for the under-18 promise, item 19). `server/src/chat.ts` `handleReport` logs the ephemeral session ids (`reporterId`, `reportedId`) plus `matchId` and `reason`, not the account id. Add `accountId` (one-line change) before the site says reports stick to an account. The site no longer says so: it says there's "a real account behind every username" (true: sign-in is required) and that a report "is recorded" (true: the server logs it). Privacy "Reports" still describes the intended record.
+6. ~~Client string renames~~ — resolved: the v1 client says **Keep in touch / Keeping in touch / In touch** and "It's what the people you talk to see.", and the mockups now show exactly that.
+7. **Omegle "new owner teaser"** — `/omegle-alternative/` FAQ "Is Omegle coming back in 2026?" rests on a single unverified source. The three source links were checked on 2026-09-23 (`--external`): Wikipedia 200; eSafety moved to `…/statement-on-video-chat-service-omegle-shutting-down` (dated 10 Nov 2023; its text matches the "3 moderators for video chat and 1 for text … as many as 40,000 simultaneous users" figures); NPR moved to `…/1211807851/omegle-shut-down-leif-k-brooks`. The old eSafety and NPR URLs are 404s.
 8. **Instagram `@meetle_`** — if it is ours, add it to `sameAs` in the home JSON-LD and update its bio; if not, ignore.
-9. **Portrait strip** on the home "No catfish allowed" section shows three faces (`portrait-woman-calm`, `portrait-guy-selfie`, `portrait-woman-laugh`) under the caption "There are no photos on Meetle." Confirm you are comfortable with that; `portrait-woman-redhair` stays excluded unless cropped.
-10. **Launch sequence and DNS timing** — publish with `noindex` (automatic) → move DNS → `noindex` drops on the next deploy. If DNS cannot move on launch day, canonicals must temporarily self-reference the github.io URL.
-11. **Report reason field** — the protocol accepts an optional reason, the client sends none; M9 shows the plain confirm. If a reason field ships, update M9 and Privacy "Reports".
+9. ~~Portrait strip~~ — resolved: no photos ship any more (see Images).
+10. **Launch sequence and DNS timing** — publish with `noindex` (automatic) → move DNS → `noindex` drops on the next deploy. If DNS cannot move on launch day, canonicals must temporarily self-reference the github.io URL. **Note (2026-09-23): DNS has already moved** — `curl -sI https://meetle.org/` answers 200 with `server: GitHub.com` — so `deploy-prepare.sh` runs in launch mode and whatever is published to Pages is live and indexable at once. Don't publish this branch until items 2, 16 and 19 are done.
+11. **Report reasons** — the v1 client sends the HANDOFF §3.8 slugs and M11 shows the sheet. Privacy "Reports" says "the reason if you gave one", which still holds.
 12. **Organization JSON-LD `foundingDate`** is `"2024"` — confirm the year.
-13. **Denials that contain banned words** (kept verbatim from the spec): "There's nothing to accept" (how-it-works W4), 'Not a "who liked you" list' (W8), "There's no accepting or declining" (FAQ Q9), "you accept the new terms" (Terms §10). Confirm denials are exempt from the never-write list.
-14. **Wording glance**: Safety S1 "no throwaway accounts" sits near S3 "a throwaway id" — both verbatim, reads fine in context.
-15. **Small additions not in the spec**, easy to strip: the FAQ page's "jump to" pill nav (sticky sidebar on desktop); the "Terms of Service →" line under Privacy "Deleting your data"; the "The long version is in the Terms." sentence in Safety S7 (optional in §5).
+13. **Denials that contain banned words**: "There's nothing to accept" (how-it-works, Keep in touch), 'Not a "who liked you" list' (What Meetle isn't), "There's no accepting or declining" (FAQ "How do I keep in touch…"), "you accept the new terms" (Terms §10). Confirm denials are exempt from the never-write list.
+14. ~~Wording glance~~ — resolved: Safety now says "There's no guest mode" (true) instead of "no throwaway accounts" (you can make throwaway Google accounts), and the throwaway session id is gone (the v1 client doesn't show one).
+15. **Small additions not in the spec**, easy to strip: the FAQ page's "jump to" pill nav (sticky sidebar on desktop); the "Terms of Service →" line under Privacy "Deleting your data"; the "The long version is in the Terms." sentence in Safety "Your part".
+16. **Voice and video are described as shipped** on every page (they're being built; publish only once they are, and only once every condition below is verified in the build — `meetle-app/design/VIDEO-SAFETY.md` recommends all of them). If only one ships, edit: home pill + ladder + band card; how-it-works steps 5 and "What Meetle isn't"; Safety "Nobody sees you first", "Your part" item 3 and the Leave-and-report aside; FAQ "What is Meetle?", "Is Meetle anonymous?", "Does Meetle save my chats?", "Is Meetle safe?", "Does Meetle have video or voice chat?", "Is Meetle like Omegle?", the Google Play answer; the whole Omegle page; Privacy and Terms EDIT blocks; OG cards og-home, og-how-it-works, og-safety, og-omegle-alternative. Details stated as fact that the build must match: both people choose voice and video; video starts covered **for both**; it uncovers only when **both** tap; **either** can cover again instantly; nothing is recorded. M7 is a concept drawing. Conditions the copy depends on, each of which must be verified before publishing:
+    - **(a) Relay-only calls.** Stranger calls use `iceTransportPolicy: 'relay'` through our own TURN server, so neither device learns the other's IP address. Plain peer-to-peer WebRTC hands each side the other's public IP (an approximate location) — which would make Safety's M12 ("location" struck through), "No trail back" and Privacy "What strangers can see" untrue. If calls won't be relay-only: take "location" out of M12 and its aria-label, qualify "No trail back", and add to Privacy "On a call, the other person's device can see your IP address."
+    - **(b) The cover is applied on the sender's device, before encoding** (DEPENDENCIES #10), not only as a blur on the viewer's screen — otherwise "Nobody sees you first", "All either of you sees is a blur" and og-safety's "Nobody sees your face until you say so." fail against a modified client.
+    - **(c) No microphone or camera before a choice, no media before both.** The app never calls `getUserMedia` on page load or before the person chooses voice or video, and sends nothing until both have chosen (Privacy: "asks … only when you choose voice or video, never before, and sends nothing until you and the other person have both chosen it"; home: "Until then, nobody hears a thing").
+    - **(d) One tap covers it for both.** Either person's cover tap covers the video on both screens at once, and uncovering needs both taps again.
+    - **(e) Leave stays in the same top corner during video** (the V1-Video board puts it in the bottom controls; see M7). If it can't, change the four "same corner" lines.
+    - **(f) Calls leave logs.** Signalling and TURN logs record who called, when, for how long and from which IP. Privacy "Technical logs" covers that; the site no longer claims "nothing about them is kept", only that voice and video aren't recorded.
+    - VIDEO-SAFETY.md's own launch gates (Block, the reports/bans tables, an age-assurance or geo decision) would change site copy too: the site says there is no Block and that 18+ is a stated rule. Revisit both when those ship.
+17. **Privacy: who carries voice and video.** If calls go through a relay (TURN) or any third-party media service, name it in Privacy "Who we share it with". The draft doesn't, because none is chosen.
+18. **Terms §3 has one new rule** (no pressuring anyone into voice or video; no recording or sharing someone's voice, video or face without their say-so). It's an addition, not a correction — legal's call.
+19. **"Accounts found to belong to someone under 18 will be removed"** (Safety, FAQ, Terms §1, Privacy "Under 18") is a promise of manual action; there's no ban mechanism yet. Kept from the spec because a person can delete an account by hand — confirm someone owns that. Reports can be tied to an account only through the separate `[auth] <conn> -> account <uuid>` log line, and only while logs are kept (item 5). Terms §3 also says "anything sexual involving minors — ever. We'll report it": that needs a named owner and a CSAM reporting process (NCMEC registration in the US) **before launch**, more so with stranger video; DEPENDENCIES also recommends a footer-linked child-safety (CSAE) policy page, which doesn't exist yet. The copy is kept because reporting is a legal duty, not a nice-to-have.
+20. **Sign-in data: confirm against a real row.** Privacy "Your account" and the FAQ "Do I need an account…?" now say the provider also passes along what it shares by default (usually a name and a profile-picture link) and that Meetle never shows or uses it: `signInWithOAuth` uses default scopes and nothing in meetle-app reads or strips `raw_user_meta_data`. Check one row of `auth.users.raw_user_meta_data` in the Supabase dashboard. If it's stripped later (a trigger or minimal scopes), put the old wording back in both places (and the FAQ's JSON-LD twin).
+21. **App string, not site copy:** M10 shows the app's `kept.body` ("You both said yes at the end of a conversation"), but Keep in touch works any time during a conversation, as the site says. The fix belongs in `copy.js`; M10 follows it.
 
 ## Accessibility and performance gates
 
-Skip link, landmarks, one H1, visible focus rings (3px sky), 4.5:1 body contrast (coral only for ≥24px headlines and the deeper `--coral-deep` for small filled keys), `role="img"` + `aria-label` on every mockup, `prefers-reduced-motion` stops the pulsing dots and match-line slide-in. Budgets: HTML ≤ 60 KB per page, CSS ≤ 40 KB, JS ≤ 8 KB, fonts ≈ 130 KB total, no third-party requests. Lighthouse targets after launch: LCP < 2.5 s, INP < 200 ms, CLS < 0.1.
+Skip link, landmarks, one H1, visible focus rings (3px `--focus`: sky-700 by day, sky-400 at night and on the dark band), 4.5:1 body contrast (coral-500 only for the mark and wordmark, coral-700 for coral text, coral-600 under white button text), `role="img"` + `aria-label` on every mockup, `prefers-reduced-motion` is respected (the mockups don't animate). Budgets: HTML ≤ 60 KB per page, CSS ≤ 40 KB, JS ≤ 8 KB, fonts ≈ 140 KB total (Nunito ×2 81 KB, Instrument Serif ×2 43 KB, DM Mono 15 KB; Nunito + both serif faces are preloaded), no third-party requests. Lighthouse targets after launch: LCP < 2.5 s, INP < 200 ms, CLS < 0.1.

@@ -1,11 +1,39 @@
 /* Shared layout for the 1200×630 Open Graph cards (tools/mockups/og-*.html). Screenshot-only; not shipped. */
 html,body{margin:0;width:1200px;height:630px;overflow:hidden}
-body.og{background:#F5EFEC;position:relative;font-family:var(--font-body)}
-.og__copy{position:absolute;left:72px;top:76px;width:660px}
-.og__wordmark{width:196px;height:auto;margin:0 0 30px}
-.og__tagline{width:640px;height:auto;margin:0 0 36px}
-.og__sub{font-family:var(--font-body);font-size:29px;font-weight:500;color:#515151;margin:0;letter-spacing:-.005em}
-.og__phone{position:absolute;right:-26px;top:78px;width:390px}
-.og__mark{position:absolute;left:74px;bottom:58px;width:44px;height:44px}
-.og .ui-dots i{animation:none;opacity:1;transform:none}
-.og .ui-match{animation:none}
+body.og{background:#F5EFEC;position:relative;font-family:var(--sans)}
+/* og-home: the Mkt-Ads 1200×630 share card (new design) — night scene right, copy on a dark gradient left */
+body.share{background:#22201F;font-family:var(--sans);color:#EFE7E3;-webkit-font-smoothing:antialiased}
+.share__art,.share__art svg{position:absolute;inset:0;width:100%;height:100%}
+.share__grain{opacity:.24;mix-blend-mode:overlay}
+.share__copy{position:relative;width:700px;height:630px;box-sizing:border-box;padding:56px;display:flex;flex-direction:column;justify-content:space-between;background:linear-gradient(90deg,rgba(20,13,12,.92) 0%,rgba(20,13,12,.86) 62%,rgba(20,13,12,0) 100%)}
+.share__lockup{display:flex;align-items:center;gap:12px;font-size:24px;font-weight:900;letter-spacing:-.03em}
+.share__lockup svg{width:28px;height:28px}
+.share__lockup span span{color:#EF8269}
+.share h1{margin:0 0 18px;font:400 72px/.96 var(--serif);letter-spacing:-.02em;color:#EFE7E3}
+.share h1 em{color:#F2705C}
+.share p{margin:0;max-width:540px;font-size:21px;line-height:1.45;color:#D6C7BF}
+.share__foot{display:flex;align-items:center;gap:22px}
+.share__tag{font-size:30px;font-weight:900;letter-spacing:-.03em;color:#4EC2EF}
+.share__meta{font:400 13px/1 var(--mono);letter-spacing:.14em;color:#A99D98}
+/* og-how-it-works: the same card over the Mkt-Ads kitchen (teal) */
+.share__copy--teal{background:linear-gradient(90deg,rgba(9,20,25,.93) 0%,rgba(9,20,25,.86) 62%,rgba(9,20,25,0) 100%)}
+/* og-safety and og-omegle-alternative: the flat Mkt-Ads units (B ink, D clay) at share-card size */
+.share__copy--plain{background:none;width:760px}
+body.share--ink{background:#22201F}
+.share__covered{position:absolute;right:64px;top:64px;width:360px;height:502px;border-radius:40px;overflow:hidden;background:radial-gradient(34% 22% at 48% 36%,#B58A78,transparent),radial-gradient(64% 30% at 48% 70%,#6B3A48,transparent),radial-gradient(50% 32% at 100% 0,rgba(232,184,75,.45),transparent),#2D3639;box-shadow:0 0 0 2px #4A403C}
+.share__tag-pill{position:absolute;left:22px;top:24px;display:flex;align-items:center;gap:9px;padding:10px 16px;border-radius:999px;background:rgba(21,17,16,.8);font:400 15px/1 var(--mono);letter-spacing:.06em;color:#A99D98}
+.share__tag-pill i{width:10px;height:10px;border-radius:50%;background:#6FC397}
+.share__self{position:absolute;right:22px;top:24px;width:96px;height:128px;border-radius:18px;border:1px solid rgba(255,255,255,.22);background:radial-gradient(40% 26% at 50% 40%,#C9A391,transparent),radial-gradient(70% 32% at 50% 88%,#7A5A78,transparent),#4A4452}
+.share--ink h1{font-size:76px}
+.share__proof{display:flex;align-items:center;gap:12px;margin-top:22px!important;font-size:20px!important;font-weight:700;color:#A99D98!important}
+.share__proof svg{width:22px;height:22px;flex:none;fill:none;stroke:#6FC397;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+body.share--clay{background:#E8D8D0;color:#22201F}
+.share--clay .share__lockup{color:#E8513D}
+.share--clay .share__lockup>span{color:#22201F}
+.share--clay .share__lockup span span{color:#E8513D}
+.share--clay h1{color:#22201F;font-size:78px}
+.share--clay h1 em{color:#B0321F}
+.share--clay p{color:#3E3936}
+.share--clay .share__meta{color:#6B615C}
+.share__loops{position:absolute;right:64px;top:196px;width:430px}
+.share__pill{display:inline-flex;align-items:center;height:52px;padding:0 28px;border-radius:999px;background:#22201F;color:#FBF8F6;font-size:19px;font-weight:800}
