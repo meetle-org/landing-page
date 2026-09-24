@@ -9,6 +9,7 @@ const pages = []; const walk = d => { for (const e of fs.readdirSync(d, { withFi
 let errors = 0, warns = 0; const err = (p, m) => { errors++; console.log(`ERROR ${path.relative(SITE, p)}: ${m}`); }; const warn = (p, m) => { warns++; console.log(`warn  ${path.relative(SITE, p)}: ${m}`); };
 const attr = (tag, name) => { const m = tag.match(new RegExp(`\\s${name}=("([^"]*)"|'([^']*)')`, 'i')); return m ? (m[2] ?? m[3]) : null; };
 const seenTitles = new Map(), seenDescs = new Map();
+const OG_MAX = 300 * 1024, ogUsed = new Set(); // share cards: size budget, and every card in assets/og must be some page's og:image
 for (const p of pages) {
   const html = fs.readFileSync(p, 'utf8'); const rel = path.relative(SITE, p); const dir = path.dirname(p); const is404 = rel === '404.html';
   if (!/^<!doctype html>/i.test(html.trim())) err(p, 'missing <!doctype html>');
@@ -25,6 +26,9 @@ for (const p of pages) {
   for (const t of ['og:title', 'og:description', 'og:image', 'og:url', 'og:type']) if (!is404 && !new RegExp(`<meta[^>]*property="${t}"`, 'i').test(html)) err(p, `missing ${t}`);
   if (!is404 && !/<meta[^>]*name="twitter:card"/i.test(html)) err(p, 'missing twitter:card');
   const ogImg = attr(html.match(/<meta[^>]*property="og:image"[^>]*>/i)?.[0] || '', 'content'); if (ogImg && !/^https:\/\/meetle\.org\//.test(ogImg)) err(p, `og:image must be absolute https://meetle.org/… : ${ogImg}`);
+  // the share card must exist in site/ and stay under 300 KB (WhatsApp drops link previews with a bigger image); twitter:image is the same card
+  if (ogImg && /^https:\/\/meetle\.org\//.test(ogImg)) { const f = path.join(SITE, ogImg.slice(CANON.length)); ogUsed.add(f); if (!fs.existsSync(f)) err(p, `og:image doesn't exist in site/: ${ogImg}`); else if (fs.statSync(f).size > OG_MAX) err(p, `og:image is ${fs.statSync(f).size} bytes, over the ${OG_MAX}-byte share-card budget: ${ogImg}`); }
+  const twImg = attr(html.match(/<meta[^>]*name="twitter:image"[^>]*>/i)?.[0] || '', 'content'); if (!is404 && twImg !== ogImg) err(p, `twitter:image must be the og:image: ${twImg}`);
   // JSON-LD must parse
   for (const m of html.matchAll(/<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi)) { try { JSON.parse(m[1]); } catch (e) { err(p, `JSON-LD does not parse: ${e.message}`); } }
   if (!is404 && !/application\/ld\+json/.test(html)) warn(p, 'no JSON-LD');
@@ -61,7 +65,7 @@ for (const p of pages) {
 // visible text, alt/aria-label/title/meta content, and JSON-LD string values — never class names or scripts.
 // FORBIDDEN are the design boards' own claims, verbatim: they can't appear even as a denial → error.
 // SUSPECT patterns are warnings: a denial ("we don't check IDs") is fine, a promise is not — read the context.
-// An element carrying data-truth-ok="<reason>" (sourced history about another service, say) is skipped for the SUSPECT
+// An element carrying data-truth-ok="<reason>" (a quoted source, say) is skipped for the SUSPECT
 // warnings only, never for FORBIDDEN; it must not contain a nested element with the same tag name.
 // FAQPage questions in JSON-LD are skipped because faqMirror() has already proved they match the visible answers.
 function collect(v, out) { if (typeof v === 'string') out.push(v); else if (Array.isArray(v)) v.forEach(x => collect(x, out)); else if (v && typeof v === 'object' && v['@type'] !== 'Question') for (const [k, x] of Object.entries(v)) if (!k.startsWith('@')) collect(x, out); }
@@ -106,6 +110,40 @@ function faqMirror(p, html) {
 const MOCKS = path.join(import.meta.dirname, 'mockups');
 for (const f of fs.readdirSync(MOCKS).filter(f => /^og-.*\.html$/.test(f))) truth(path.join(MOCKS, f), fs.readFileSync(path.join(MOCKS, f), 'utf8'));
 { const mf = path.join(SITE, 'site.webmanifest'); const strs = []; collect(JSON.parse(fs.readFileSync(mf, 'utf8')), strs); scan(mf, strs.join('. ')); }
+// Brand rules (README "Brand rules"), both errors.
+// 1. "Talk first, match later." is the tagline and it leads: the home <title> and <h1>, the Organization JSON-LD slogan,
+//    the footer lockup on every page, the web manifest description and the home share card (tools/mockups/og-home.html).
+//    A title that ends in the brand ("Privacy Policy | Meetle") carries the tagline too: "… | Meetle: talk first, match later".
+// 2. Never name another service or compare Meetle with one. NEVER_NAMED is checked everywhere: every file in site/ (visible
+//    text, attributes, URLs, JSON-LD, sitemap — any file's content, binaries included — and every file or folder name), every
+//    source in tools/ (mockups, snippets, scripts) and README.md. The pattern has a character class so that grepping the
+//    repo for the name finds nothing, this file included.
+{
+  const TAGLINE = /talk first, match later/i, NEVER_NAMED = /o[m]egle/i;
+  const ROOT = path.join(import.meta.dirname, '..'), TOOLS = import.meta.dirname, README = path.join(ROOT, 'README.md');
+  const text = s => s.replace(/<br\s*\/?>/gi, ' ').replace(/<[^>]+>/g, '').replace(/&amp;/g, '&').replace(/\s+/g, ' ').trim();
+  const home = path.join(SITE, 'index.html'), hh = fs.readFileSync(home, 'utf8');
+  const title = (hh.match(/<title>([^<]*)<\/title>/i) || [])[1] || ''; if (!TAGLINE.test(title)) err(home, `brand rule 1: the home <title> must carry "Talk first, match later": "${title}"`);
+  const h1 = text((hh.match(/<h1[^>]*>([\s\S]*?)<\/h1>/i) || [])[1] || ''); if (!TAGLINE.test(h1)) err(home, `brand rule 1: the home <h1> must be "Talk first, match later.": "${h1}"`);
+  const slogans = []; const findSlogans = v => { if (Array.isArray(v)) v.forEach(findSlogans); else if (v && typeof v === 'object') for (const [k, x] of Object.entries(v)) { if (k === 'slogan') slogans.push(String(x)); else findSlogans(x); } };
+  lds(hh).forEach(findSlogans);
+  for (const p of pages) { const t = (fs.readFileSync(p, 'utf8').match(/<title>([^<]*)<\/title>/i) || [])[1] || ''; if (/\|\s*Meetle\s*$/i.test(t)) err(p, `brand rule 1: a title that ends in the brand ends "| Meetle: talk first, match later": "${t}"`); }
+  if (!slogans.length) err(home, 'brand rule 1: no "slogan" in the home JSON-LD'); for (const s of slogans) if (!TAGLINE.test(s)) err(home, `brand rule 1: JSON-LD slogan must be "Talk first, match later.": "${s}"`);
+  for (const p of pages) { const tag = fs.readFileSync(p, 'utf8').match(/<p class="site-footer__tag">([\s\S]*?)<\/p>/); if (!tag || !TAGLINE.test(text(tag[1]))) err(p, `brand rule 1: the footer lockup must read "talk first, match later"${tag ? `: "${text(tag[1])}"` : ' (no .site-footer__tag)'}`); }
+  const mfDesc = JSON.parse(fs.readFileSync(path.join(SITE, 'site.webmanifest'), 'utf8')).description || ''; if (!TAGLINE.test(mfDesc)) err(path.join(SITE, 'site.webmanifest'), `brand rule 1: the manifest description must carry the tagline: "${mfDesc}"`);
+  const ogHome = path.join(MOCKS, 'og-home.html'), ogH1 = text((fs.readFileSync(ogHome, 'utf8').match(/<h1[^>]*>([\s\S]*?)<\/h1>/i) || [])[1] || ''); if (!TAGLINE.test(ogH1)) err(ogHome, `brand rule 1: the home share card must lead with the tagline: "${ogH1}"`);
+  const files = [README]; const walkAll = d => { for (const e of fs.readdirSync(d, { withFileTypes: true })) {
+    if (e.name === '.DS_Store' || e.name === 'node_modules' || (d === TOOLS && e.name === 'out')) continue; // out/ is generated and git-ignored
+    const f = path.join(d, e.name); if (NEVER_NAMED.test(e.name)) err(f, 'brand rule 2: a file or folder name uses a name Meetle never uses');
+    if (e.isDirectory()) walkAll(f); else files.push(f);
+  } };
+  walkAll(SITE); walkAll(TOOLS);
+  for (const f of files) {
+    const buf = fs.readFileSync(f); const s = /\.(html|css|m?js|json|xml|txt|webmanifest|svg|md|sh)$/i.test(f) ? buf.toString('utf8') : buf.toString('latin1');
+    const hits = [...s.matchAll(new RegExp(`[^\\n<>"]{0,40}${NEVER_NAMED.source}[^\\n<>"]{0,40}`, 'gi'))].map(m => m[0].trim());
+    if (hits.length) err(f, `brand rule 2: uses a name Meetle never uses (${hits.length}×): "${hits.slice(0, 3).join('" | "')}"${hits.length > 3 ? ' …' : ''}`);
+  }
+}
 // --external: every outbound <a href> must answer 2xx/3xx (HEAD, then GET for servers that refuse HEAD)
 if (EXTERNAL) {
   const UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36';
@@ -116,6 +154,8 @@ if (EXTERNAL) {
   }));
   console.log(`${outbound.size} outbound links requested`);
 }
+// share cards nobody references would still ship (and be crawled): every file in assets/og must be some page's og:image
+{ const OG = path.join(SITE, 'assets', 'og'); for (const f of fs.readdirSync(OG).filter(f => f !== '.DS_Store')) if (!ogUsed.has(path.join(OG, f))) err(path.join(OG, f), 'share card no page uses as og:image (delete it)'); }
 // budgets (README "Accessibility and performance gates")
 const sizes = {}; for (const [rel, max] of [['assets/css/site.css', 40 * 1024], ['assets/js/site.js', 8 * 1024]]) { const f = path.join(SITE, rel); sizes[rel] = fs.statSync(f).size; if (sizes[rel] > max) err(f, `${sizes[rel]} bytes, over the ${max}-byte budget`); }
 // sitemap + robots

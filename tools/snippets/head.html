@@ -1,11 +1,12 @@
 <!--
   HEAD PARTIAL — paste everything from <head> to </head> into your page, then substitute by hand:
-    {{TITLE}}        the page <title> from content-spec §3 (≤ 60 chars, exact text)
+    {{TITLE}}        the page <title> from content-spec §3 (≤ 60 chars, exact text); a title that ends in the brand
+                     ends "| Meetle: talk first, match later" (README brand rule 1)
     {{DESCRIPTION}}  the meta description from content-spec §3 (≤ 155 chars, exact text)
     {{CANONICAL}}    absolute, trailing slash: https://meetle.org/  ·  https://meetle.org/how-it-works/  …
-    {{OG_ALT}}       what the card shows, in words (og-home.png: "meetle.org — Talk to a stranger. Keep your face to yourself. Text first, no profile, 18+.")
-    {{OG_IMAGE}}     file name only: og-home.png | og-how-it-works.png | og-safety.png | og-omegle-alternative.png
-                     (faq, privacy and terms reuse og-home.png)
+    {{OG_ALT}}       what the card shows, in words (og-home.jpg: "meetle.org — Talk first, match later. No profile, no photo, no real name: just a conversation with one stranger, text first. Free, in your browser, 18+.")
+    {{OG_IMAGE}}     file name only: og-home.jpg | og-how-it-works.jpg | og-safety.png
+                     (faq, privacy and terms reuse og-home.jpg)
     {{PREFIX}}       relative path to the site root: "./" on the home page, "../" on every /sub-page/index.html
   Then replace the JSON-LD comment line with the page's <script type="application/ld+json"> (spec §8.1).
   Rules: the literal string "<head>" must stay on its own with no attributes (the deploy script injects after it);

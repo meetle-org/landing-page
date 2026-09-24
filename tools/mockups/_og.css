@@ -17,7 +17,7 @@ body.share{background:#22201F;font-family:var(--sans);color:#EFE7E3;-webkit-font
 .share__meta{font:400 13px/1 var(--mono);letter-spacing:.14em;color:#A99D98}
 /* og-how-it-works: the same card over the Mkt-Ads kitchen (teal) */
 .share__copy--teal{background:linear-gradient(90deg,rgba(9,20,25,.93) 0%,rgba(9,20,25,.86) 62%,rgba(9,20,25,0) 100%)}
-/* og-safety and og-omegle-alternative: the flat Mkt-Ads units (B ink, D clay) at share-card size */
+/* og-safety: the flat Mkt-Ads ink unit (B) at share-card size */
 .share__copy--plain{background:none;width:760px}
 body.share--ink{background:#22201F}
 .share__covered{position:absolute;right:64px;top:64px;width:360px;height:502px;border-radius:40px;overflow:hidden;background:radial-gradient(34% 22% at 48% 36%,#B58A78,transparent),radial-gradient(64% 30% at 48% 70%,#6B3A48,transparent),radial-gradient(50% 32% at 100% 0,rgba(232,184,75,.45),transparent),#2D3639;box-shadow:0 0 0 2px #4A403C}
@@ -27,13 +27,5 @@ body.share--ink{background:#22201F}
 .share--ink h1{font-size:76px}
 .share__proof{display:flex;align-items:center;gap:12px;margin-top:22px!important;font-size:20px!important;font-weight:700;color:#A99D98!important}
 .share__proof svg{width:22px;height:22px;flex:none;fill:none;stroke:#6FC397;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
-body.share--clay{background:#E8D8D0;color:#22201F}
-.share--clay .share__lockup{color:#E8513D}
-.share--clay .share__lockup>span{color:#22201F}
-.share--clay .share__lockup span span{color:#E8513D}
-.share--clay h1{color:#22201F;font-size:78px}
-.share--clay h1 em{color:#B0321F}
-.share--clay p{color:#3E3936}
-.share--clay .share__meta{color:#6B615C}
-.share__loops{position:absolute;right:64px;top:196px;width:430px}
-.share__pill{display:inline-flex;align-items:center;height:52px;padding:0 28px;border-radius:999px;background:#22201F;color:#FBF8F6;font-size:19px;font-weight:800}
+/* og-home leads with the tagline, two lines of display type (the italic coral second line, as on the home hero) */
+.share--home h1{font-size:104px;line-height:.92;margin-bottom:26px}

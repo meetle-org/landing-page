@@ -2,6 +2,11 @@
 // <meta name="viewport-size" content="WxH[@scale]"> tag, to ../site/assets/img/mockups/<name>.png (+ .webp)
 // and ../site/assets/og/<name>.png for files starting with "og-". Requires Google Chrome on macOS,
 // or set CHROME=/path/to/chrome.
+// OG cards: a flat card (og-safety) is a 256-colour palette PNG. A card over a grained scene declares
+// <meta name="og-format" content="jpeg"> and becomes <name>.jpg instead: film grain defeats PNG compression
+// (the palette PNG of og-home was 340 KB, over the ~300 KB that WhatsApp link previews allow), while a
+// 4:4:4 JPEG at q90 is ~60 KB and indistinguishable. Rendering deletes the card's file in the other format,
+// so switching formats never leaves a stale card behind; check-site keeps every card under 300 KB.
 import { execFileSync } from 'node:child_process'; import fs from 'node:fs'; import path from 'node:path'; import sharp from 'sharp';
 const CHROME = process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const DIR = path.join(import.meta.dirname, 'mockups');
@@ -21,7 +26,12 @@ for (const f of fs.readdirSync(DIR).filter(f => f.endsWith('.html') && !f.starts
   execFileSync(CHROME, ['--headless=new', '--disable-gpu', '--hide-scrollbars', '--no-first-run', `--force-device-scale-factor=${scale}`,
     `--window-size=${w},${h}`, `--screenshot=${outPng}`, 'file://' + path.join(DIR, f)], { stdio: ['ignore', 'ignore', 'ignore'] });
   const meta = await sharp(outPng).metadata();
-  if (isOg) { await sharp(outPng).png({ palette: true, quality: 100, colors: 256, dither: 1, effort: 10 }).toFile(outPng + '.tmp'); fs.renameSync(outPng + '.tmp', outPng); } // grain → palette PNG keeps share cards ~120 KB
+  let out = outPng;
+  if (isOg) {
+    const jpeg = /name="og-format"\s+content="jpeg"/.test(html), outJpg = path.join(OG_OUT, name + '.jpg');
+    if (jpeg) { await sharp(outPng).jpeg({ quality: 90, mozjpeg: true, chromaSubsampling: '4:4:4' }).toFile(outJpg); fs.rmSync(outPng); out = outJpg; }
+    else { await sharp(outPng).png({ palette: true, quality: 100, colors: 256, dither: 1, effort: 10 }).toFile(outPng + '.tmp'); fs.renameSync(outPng + '.tmp', outPng); fs.rmSync(outJpg, { force: true }); }
+  }
   if (!isOg) { await sharp(outPng).webp({ quality: 88 }).toFile(path.join(MOCK_OUT, name + '.webp')); await sharp(outPng).png({ compressionLevel: 9, palette: false }).toFile(outPng + '.tmp'); fs.renameSync(outPng + '.tmp', outPng); }
-  console.log(name, `${meta.width}x${meta.height}`, isOg ? '(og)' : '');
+  console.log(name, `${meta.width}x${meta.height}`, isOg ? `(og) ${path.basename(out)} ${fs.statSync(out).size} B` : '');
 }
